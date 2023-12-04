@@ -1,9 +1,7 @@
 import argparse
 import os
 from pathlib import Path
-import tensorflow as tf
 import flwr as fl
-import pandas as pd
 from sklearn.model_selection import train_test_split
 import utils
 
@@ -57,6 +55,7 @@ class CifarClient(fl.client.NumPyClient):
             shuffle=True,
             epochs=epochs,
             batch_size=batch_size,
+            # validation_split = 0.2,
             validation_data=(x_val, y_val),
             class_weight=class_weights,
             workers=3
@@ -99,25 +98,28 @@ class CifarClient(fl.client.NumPyClient):
 
 
 def main() -> None:
-    # Parse command line argument `partition`
     parser = argparse.ArgumentParser(description="Flower")
 
     parser.add_argument("--host", type=str,default="127.0.0.1")
-    parser.add_argument("--dataset", type=int,default=0,choices=range(0,5))
-
+    parser.add_argument("-p", "--port", type=str,default="18922")
+    parser.add_argument("-t", "--test", type=int,default=1,choices=range(1,9))
+    parser.add_argument("-v", "--val", type=int,default=2,choices=range(1,9))
+    parser.add_argument("-d", "--data", type=int,nargs='+',default=3,choices=range(1,7))
 
     args = parser.parse_args()
 
-    x_train, y_train = utils.get_dataset(df=utils.load_dataset_train() if args.dataset == 0 else utils.load_dataset_full(args.dataset))
+    datalist = args.data if isinstance(args.data, list) else [args.data]
+    x_train, y_train = utils.get_dataset(df=utils.load_datasets(datalist))
     
+
     # Using A Part Train Data for Val
-    x_val, y_val = utils.get_dataset(df=utils.load_dataset_train())
-    _, x_val, _, y_val  = train_test_split(x_val, y_val, test_size=0.1)
+    x_val, y_val = utils.get_dataset(df=utils.load_dataset_full(args.val))
+    _, x_val, _, y_val  = train_test_split(x_val, y_val, test_size=0.1, stratify=y_val)
 
     
     #Using A Part Test Data for Test
-    x_test, y_test = utils.get_dataset(df=utils.load_dataset_test())
-    _, x_test, _, y_test  = train_test_split(x_test, y_test, test_size=0.2)
+    x_test, y_test = utils.get_dataset(df=utils.load_dataset_full(args.test))
+    _, x_test, _, y_test  = train_test_split(x_test, y_test, test_size=0.2, stratify=y_test)
 
     # Start Flower client
     model = utils.get_model(inshape=x_train.shape[1])
@@ -125,7 +127,7 @@ def main() -> None:
     client = CifarClient(model, x_train, y_train, x_test, y_test, x_val, y_val)
 
     fl.client.start_numpy_client(
-        server_address= args.host + ":18922",
+        server_address= args.host + ":" + args.port,
         client=client,
         root_certificates=Path(".cache/certificates/ca.crt").read_bytes(),
     )

@@ -5,31 +5,46 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.utils import compute_class_weight
+from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score, confusion_matrix
 from tensorflow.keras.utils import to_categorical
+import tensorflow as tf
 
 MULTICLASS = True
 LEARNING_RATE = 1e-3
 
 FEATURE_LABELS = {
-    "proto" : ['udp', 'arp', 'tcp', 'igmp', 'ospf', 'sctp', 'gre', 'ggp', 'ip', 'ipnip', 'st2', 'argus', 'chaos', 'egp', 'emcon', 'nvp', 'pup', 'xnet', 'mux', 'dcn', 'hmp', 'prm', 'trunk-1', 'trunk-2', 'xns-idp', 'leaf-1', 'leaf-2', 'irtp', 'rdp', 'netblt', 'mfe-nsp', 'merit-inp', '3pc', 'idpr', 'ddp', 'idpr-cmtp', 'tp++', 'ipv6', 'sdrp', 'ipv6-frag', 'ipv6-route', 'idrp', 'mhrp', 'i-nlsp', 'rvd', 'mobile', 'narp', 'skip', 'tlsp', 'ipv6-no', 'any', 'ipv6-opts', 'cftp', 'sat-expak', 'ippc', 'kryptolan', 'sat-mon', 'cpnx', 'wsn', 'pvp', 'br-sat-mon', 'sun-nd', 'wb-mon', 'vmtp', 'ttp', 'vines', 'nsfnet-igp', 'dgp', 'eigrp', 'tcf', 'sprite-rpc', 'larp', 'mtp', 'ax.25', 'ipip', 'aes-sp3-d', 'micp', 'encap', 'pri-enc', 'gmtp', 'ifmp', 'pnni', 'qnx', 'scps', 'cbt', 'bbn-rcc', 'igp', 'bna', 'swipe', 'visa', 'ipcv', 'cphb', 'iso-tp4', 'wb-expak', 'sep', 'secure-vmtp', 'xtp', 'il', 'rsvp', 'unas', 'fc', 'iso-ip', 'etherip', 'pim', 'aris', 'a/n', 'ipcomp', 'snp', 'compaq-peer', 'ipx-n-ip', 'pgm', 'vrrp', 'l2tp', 'zero', 'ddx', 'iatp', 'stp', 'srp', 'uti', 'sm', 'smp', 'isis', 'ptp', 'fire', 'crtp', 'crudp', 'sccopmce', 'iplt', 'pipe', 'sps', 'ib', 'icmp', 'udt', 'rtp', 'esp'],    "service" : ['-', 'ftp', 'smtp', 'snmp', 'http', 'ftp-data', 'dns', 'ssh', 'radius', 'pop3', 'dhcp', 'ssl', 'irc'],
-    "service" : ['-', 'http', 'ftp', 'ftp-data', 'smtp', 'pop3', 'dns', 'snmp', 'ssl', 'dhcp', 'irc', 'radius', 'ssh'],
-    "state" : ['INT', 'FIN', 'REQ', 'ACC', 'CON', 'RST', 'CLO', 'URH', 'ECO', 'TXD', 'URN', 'no', 'PAR', 'MAS', 'TST', 'ECR'],
-    "attack_cat" : ['Normal', 'Reconnaissance', 'Backdoor', 'DoS', 'Exploits', 'Analysis', 'Fuzzers', 'Worms', 'Shellcode', 'Generic', 'Backdoors'],
+    "proto" :  ['3pc', 'a/n', 'aes-sp3-d', 'any', 'argus', 'aris', 'arp', 'ax.25', 'bbn-rcc', 'bna', 'br-sat-mon', 'cbt', 'cftp', 'chaos', 'compaq-peer', 'cphb', 'cpnx', 'crtp', 'crudp', 'dcn', 'ddp', 'ddx', 'dgp', 'egp', 'eigrp', 'emcon', 'encap', 'etherip', 'fc', 'fire', 'ggp', 'gmtp', 'gre', 'hmp', 'i-nlsp', 'iatp', 'ib', 'icmp', 'idpr', 'idpr-cmtp', 'idrp', 'ifmp', 'igmp', 'igp', 'il', 'ip', 'ipcomp', 'ipcv', 'ipip', 'iplt', 'ipnip', 'ippc', 'ipv6', 'ipv6-frag', 'ipv6-no', 'ipv6-opts', 'ipv6-route', 'ipx-n-ip', 'irtp', 'isis', 'iso-ip', 'iso-tp4', 'kryptolan', 'l2tp', 'larp', 'leaf-1', 'leaf-2', 'merit-inp', 'mfe-nsp', 'mhrp', 'micp', 'mobile', 'mtp', 'mux', 'narp', 'netblt', 'nsfnet-igp', 'nvp', 'ospf', 'pgm', 'pim', 'pipe', 'pnni', 'pri-enc', 'prm', 'ptp', 'pup', 'pvp', 'qnx', 'rdp', 'rsvp', 'rtp', 'rvd', 'sat-expak', 'sat-mon', 'sccopmce', 'scps', 'sctp', 'sdrp', 'secure-vmtp', 'sep', 'skip', 'sm', 'smp', 'snp', 'sprite-rpc', 'sps', 'srp', 'st2', 'stp', 'sun-nd', 'swipe', 'tcf', 'tcp', 'tlsp', 'tp++', 'trunk-1', 'trunk-2', 'ttp', 'udp', 'unas', 'uti', 'vines', 'visa', 'vmtp', 'vrrp', 'wb-expak', 'wb-mon', 'wsn', 'xnet', 'xns-idp', 'xtp', 'zero'],
+    "service" : ['-', 'dhcp', 'dns', 'ftp', 'ftp-data', 'http', 'irc', 'pop3', 'radius', 'smtp', 'snmp', 'ssh', 'ssl'],
+    "state" :  ['ACC', 'CLO', 'CON', 'ECO', 'FIN', 'INT', 'PAR', 'REQ', 'RST', 'URN', 'no'],
+    "attack_cat" :  ['Analysis', 'Backdoor', 'DoS', 'Exploits', 'Fuzzers', 'Generic', 'Normal', 'Reconnaissance', 'Shellcode', 'Worms'],
 }
 MODEL_OUTSHAPE = len(FEATURE_LABELS['attack_cat'])
 # MODEL_OUTSHAPE = 20
 
+print("Tenserflow Version: ", tf.__version__)
+print("Num GPUs Available: ", len(tf.config.list_physical_devices('GPU')))
 
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+  try:
+    tf.config.set_visible_devices(gpus[0], 'GPU')
+    logical_gpus = tf.config.list_logical_devices('GPU')
+    print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPU")
+  except RuntimeError as e:
+    # Visible devices must be set before GPUs have been initialized
+    print(e)
 
 
 
 def get_outshape():
     return MODEL_OUTSHAPE 
 
-def get_model(inshape: int):
-    model = models.model_conv1D(lr=LEARNING_RATE,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
-    # model = models.model_dense(lr=LEARNING_RATE,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
-    # model = models.model_lstm(lr=LEARNING_RATE,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
+def get_model(inshape: int, lr=LEARNING_RATE):
+    model = models.model_conv1D(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
+    # model = models.model_dense(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
+    # model = models.model_lstm(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
+    # model = models.model_conv1D_large(lr=lr,N=64,nfeat=inshape,nclass=MODEL_OUTSHAPE)
+    # model = models.model_conv1D_binary(lr=lr,N=64,nfeat=inshape,nclass=MODEL_OUTSHAPE)
     return model
 
 
@@ -70,6 +85,26 @@ def label_to_categorical(y):
 
 
 
+def get_model_result(model, x, y, batch_size):
+    pred = model.predict(x)
+
+    f1 = f1_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="Weighted")
+    precision = precision_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="Weighted")
+    recall = recall_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="Weighted")
+    accuracy = accuracy_score(y.argmax(axis=-1), pred.argmax(axis=-1))
+
+    print("F1:" , f1_score(y.argmax(axis=-1), pred.argmax(axis=-1), average=None))
+    print("Precision:" , precision_score(y.argmax(axis=-1), pred.argmax(axis=-1), average=None))
+    print("Recall:" , recall_score(y.argmax(axis=-1), pred.argmax(axis=-1), average=None))
+    print("Accuracy:" , accuracy)
+    
+    return {
+        f1 : f1,
+        precision : precision,
+        recall : recall,
+        accuracy : accuracy,
+    }
+
 # -------------------------
 #       Dataset
 # -------------------------
@@ -88,28 +123,16 @@ def get_dataset(df : pd.DataFrame):
     return x.astype('float32'), y.astype('int32')
 
 
-def load_dataset_header():
-    return pd.read_csv("./dataset/UNSW_NB15_features.csv")
+def load_datasets(idxs : list[int]):
+    df = pd.concat([load_dataset_full(idx) for idx in idxs])    
+    return df
 
 def load_dataset_full(idx : int):
-    assert idx in range(1,5)
-    dfheader = load_dataset_header()
-    header = [x.lower() for x in dfheader["Name"]] 
-    df = pd.read_csv("./dataset/UNSW_NB15_" + str(idx) + ".csv")
-    df.columns = header
-    df = normalize_dataframe(df)
-    df["attack_cat"].fillna("Normal", inplace = True)
-    df["is_ftp_login"].fillna(0, inplace = True)
-    df["ct_flw_http_mthd"].fillna(0, inplace = True)
+    print("loading dataset: ", idx)
+    df = pd.read_csv("./dataset/UNSW_NB15-" + str(idx) + ".csv")
     return df
 
-def load_dataset_train():
-    df = pd.read_csv("./dataset/UNSW_NB15_training.csv")
-    return df
 
-def load_dataset_test():
-    df = pd.read_csv("./dataset/UNSW_NB15_testing.csv")
-    return df
 
 def split_dataset(x, y, round, max_round):
     if round == max_round:
@@ -129,7 +152,7 @@ def normalize_dataframe(df : pd.DataFrame):
     """
     Trim whitespace from ends of each value across all series in dataframe
     """
-    df = df.map(lambda x: x.strip() if isinstance(x, str) else x)
+    df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
     df = df.replace(r'^\s*$', np.nan, regex=True)
     return df
 
@@ -140,6 +163,12 @@ def features_selection(df : pd.DataFrame):
 
 
 
+def drop_sparse_columns(df: pd.DataFrame, threshold: float) -> pd.DataFrame:
+    # BEGIN SOLUTION
+    df = df.drop(columns=[col for col in df if df[col].isna().sum()/df.__len__() > threshold])
+    return df
+    # END SOLUTION
+    pass
 
 
 def get_feature_label(feature):
