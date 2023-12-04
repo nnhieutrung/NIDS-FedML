@@ -1,7 +1,21 @@
 from tensorflow.keras.layers import Flatten,Dense, Input,Dropout, Conv1D, AvgPool1D
-from tensorflow.keras.models import Model  
+from tensorflow.keras.models import Model, Sequential
 from tensorflow.keras import optimizers,layers,losses
 
+
+#------------------------------------------------------------------------------
+# baseline
+#------------------------------------------------------------------------------
+
+def model_baseline(inshape=-1, nclass=12):
+    model = Sequential()
+    model.add(Dense(79, activation='relu', input_shape=(inshape,)))
+    model.add(Dense(128, activation='relu'))
+    model.add(Dense(nclass, activation='softmax')) 
+    model.compile(optimizer='adam',
+                    loss='categorical_crossentropy',
+                    metrics=['accuracy'])
+    return model
 
 #------------------------------------------------------------------------------
 # LSTM
@@ -16,7 +30,7 @@ def model_lstm(lr=1e-4,N=64,inshape=40,nclass=12):
     model=Model(inputs=in1,outputs=out1)
     
     model.compile(optimizer=optimizers.Adam(lr),
-              loss=losses.categorical_crossentropy,
+              loss=losses.sparse_categorical_crossentropy,
               metrics=['acc'])
     return model
 
@@ -37,7 +51,7 @@ def model_conv1D(lr=1e-4,N=64,inshape=40,nclass=12):
     
     model.compile(optimizer=optimizers.Adam(lr),
               loss=losses.categorical_crossentropy,
-              metrics=['acc'])
+              metrics=['acc', 'f1_macro'])
     return model
 
 
