@@ -40,7 +40,8 @@ def get_outshape():
     return MODEL_OUTSHAPE 
 
 def get_model(inshape: int, lr=LEARNING_RATE):
-    model = models.model_conv1D(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
+    model = models.model_baseline(lr=lr,inshape=inshape,nclass=MODEL_OUTSHAPE)
+    # model = models.model_conv1D(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
     # model = models.model_dense(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
     # model = models.model_lstm(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
     # model = models.model_conv1D_large(lr=lr,N=64,nfeat=inshape,nclass=MODEL_OUTSHAPE)
@@ -88,9 +89,9 @@ def label_to_categorical(y):
 def get_model_result(model, x, y, batch_size):
     pred = model.predict(x)
 
-    f1 = f1_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="Weighted")
-    precision = precision_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="Weighted")
-    recall = recall_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="Weighted")
+    f1 = f1_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="weighted")
+    precision = precision_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="weighted")
+    recall = recall_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="weighted")
     accuracy = accuracy_score(y.argmax(axis=-1), pred.argmax(axis=-1))
 
     print("F1:" , f1_score(y.argmax(axis=-1), pred.argmax(axis=-1), average=None))

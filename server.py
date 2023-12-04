@@ -73,8 +73,8 @@ def get_evaluate_fn(model, x_test, y_test):
         config: Dict[str, fl.common.Scalar],
     ) -> Optional[Tuple[float, Dict[str, fl.common.Scalar]]]:
         model.set_weights(parameters)  # Update model with the latest parameters
-        result = utils.get_model_result(self.model, x_test, y_test, BATCH_SIZE)
-        return loss, {"accuracy": accuracy}
+        result = utils.get_model_result(model, x_test, y_test, BATCH_SIZE)
+        return loss, result
 
     return evaluate
 

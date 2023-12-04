@@ -7,13 +7,13 @@ from tensorflow.keras import optimizers,layers,losses
 # baseline
 #------------------------------------------------------------------------------
 
-def model_baseline(inshape=-1, nclass=12):
+def model_baseline(lr=1e-4,inshape=40, nclass=12):
     model = Sequential()
     model.add(Dense(79, activation='relu', input_shape=(inshape,)))
     model.add(Dense(128, activation='relu'))
     model.add(Dense(nclass, activation='softmax')) 
-    model.compile(optimizer='adam',
-                    loss='categorical_crossentropy',
+    model.compile(optimizer=optimizers.Adam(lr),
+              loss=losses.sparse_categorical_crossentropy,
                     metrics=['accuracy'])
     return model
 
