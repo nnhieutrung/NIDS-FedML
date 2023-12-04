@@ -40,8 +40,8 @@ def get_outshape():
     return MODEL_OUTSHAPE 
 
 def get_model(inshape: int, lr=LEARNING_RATE):
-    model = models.model_baseline(lr=lr,inshape=inshape,nclass=MODEL_OUTSHAPE)
-    # model = models.model_conv1D(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
+    model = models.model_conv1D(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
+    # model = models.model_baseline(lr=lr,inshape=inshape,nclass=MODEL_OUTSHAPE)
     # model = models.model_dense(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
     # model = models.model_lstm(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
     # model = models.model_conv1D_large(lr=lr,N=64,nfeat=inshape,nclass=MODEL_OUTSHAPE)
