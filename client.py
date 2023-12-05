@@ -104,7 +104,7 @@ def main() -> None:
     parser.add_argument("-p", "--port", type=str,default="18922")
     parser.add_argument("-t", "--test", type=int,default=1,choices=range(1,9))
     parser.add_argument("-v", "--val", type=int,default=2,choices=range(1,9))
-    parser.add_argument("-d", "--data", type=int,nargs='+',default=3,choices=range(1,7))
+    parser.add_argument("-d", "--data", type=int,nargs='+',default=3,choices=range(1,9))
 
     args = parser.parse_args()
 

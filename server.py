@@ -8,9 +8,9 @@ import utils
 
 
 NUM_CLIENTS     = 3
-BATCH_SIZE      = 16
+BATCH_SIZE      = 32
 NUM_EPOCHS      = 100
-NUM_ROUNDS      = 10
+NUM_ROUNDS      = 5
 
 
 
@@ -73,6 +73,8 @@ def get_evaluate_fn(model, x_test, y_test):
         config: Dict[str, fl.common.Scalar],
     ) -> Optional[Tuple[float, Dict[str, fl.common.Scalar]]]:
         model.set_weights(parameters)  # Update model with the latest parameters
+        loss, accuracy = model.evaluate(x_test, y_test, BATCH_SIZE)
+        result = {"accuracy" : accuracy}
         result = utils.get_model_result(model, x_test, y_test, BATCH_SIZE)
         return loss, result
 

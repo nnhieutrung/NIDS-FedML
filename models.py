@@ -51,7 +51,7 @@ def model_conv1D(lr=1e-4,N=64,inshape=40,nclass=12):
     
     model.compile(optimizer=optimizers.Adam(lr),
               loss=losses.categorical_crossentropy,
-              metrics=['acc', 'f1_macro'])
+              metrics=['acc'])
     return model
 
 

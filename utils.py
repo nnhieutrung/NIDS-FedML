@@ -87,7 +87,7 @@ def label_to_categorical(y):
 
 
 def get_model_result(model, x, y, batch_size):
-    pred = model.predict(x)
+    pred = model.predict(x,batch_size=batch_size)
 
     f1 = f1_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="weighted")
     precision = precision_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="weighted")
@@ -100,10 +100,10 @@ def get_model_result(model, x, y, batch_size):
     print("Accuracy:" , accuracy)
     
     return {
-        f1 : f1,
-        precision : precision,
-        recall : recall,
-        accuracy : accuracy,
+        "f1" : f1,
+        "precision" : precision,
+        "recall" : recall,
+        "accuracy" : accuracy,
     }
 
 # -------------------------
