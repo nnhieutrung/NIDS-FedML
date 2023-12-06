@@ -4,29 +4,40 @@ from pathlib import Path
 import flwr as fl
 from sklearn.preprocessing import MinMaxScaler
 import utils
+import os
 
 
-
-NUM_CLIENTS     = 3
+NUM_CLIENTS     = 2
 BATCH_SIZE      = 32
 NUM_EPOCHS      = 100
-NUM_ROUNDS      = 5
-
+NUM_ROUNDS      = 1
+SPLIT_DATASET   = False
 
 
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Flower")
     parser.add_argument("-p", "--port", type=str,default="18922")
-    parser.add_argument("-t", "--test", type=int,default=1,choices=range(1,9))
-    
+    parser.add_argument("-nr", "--nround", type=int,default=4)
+    parser.add_argument("-bs", "--bsize", type=int,default=64)
+    parser.add_argument("-nl", "--nclient", type=int,default=2)
+    parser.add_argument("-sd", "--sdataset", type=bool,default=False)
 
     args = parser.parse_args()
+    
+    global NUM_CLIENTS
+    NUM_CLIENTS = args.nclient
+    global SPLIT_DATASET
+    SPLIT_DATASET = args.sdataset
+    global NUM_ROUNDS
+    NUM_ROUNDS = args.nround
+    global BATCH_SIZE
+    BATCH_SIZE = args.bsize
 
     # Load and compile model for
     # 1. server-side parameter initialization
     # 2. server-side parameter evaluation
-    x_test, y_test = utils.get_dataset(df=utils.load_dataset_full(args.test))
+    x_test, y_test = utils.get_dataset(df=utils.load_dataset_test())
 
 
     scaler = MinMaxScaler()
@@ -73,9 +84,10 @@ def get_evaluate_fn(model, x_test, y_test):
         config: Dict[str, fl.common.Scalar],
     ) -> Optional[Tuple[float, Dict[str, fl.common.Scalar]]]:
         model.set_weights(parameters)  # Update model with the latest parameters
-        loss, accuracy = model.evaluate(x_test, y_test, BATCH_SIZE)
+        loss, accuracy, f1, prec, recall  = model.evaluate(x_test, y_test, BATCH_SIZE)
         result = {"accuracy" : accuracy}
         result = utils.get_model_result(model, x_test, y_test, BATCH_SIZE)
+        model.save('my_model.h5')
         return loss, result
 
     return evaluate
@@ -92,6 +104,7 @@ def fit_config(server_round: int):
         "max_round" : NUM_ROUNDS,
         "batch_size": BATCH_SIZE,
         "local_epochs": NUM_EPOCHS,
+        "split_dataset" : SPLIT_DATASET,
     }
 
     config = utils.set_scaler(config)
@@ -113,6 +126,7 @@ def evaluate_config(server_round: int):
         "max_round" : NUM_ROUNDS,
         "batch_size": BATCH_SIZE,
         "local_epochs": NUM_EPOCHS,
+        "split_dataset" : SPLIT_DATASET,
     }
     
     config = utils.set_scaler(config)

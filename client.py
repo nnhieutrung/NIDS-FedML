@@ -36,9 +36,14 @@ class CifarClient(fl.client.NumPyClient):
         
         batch_size: int = config["batch_size"]
         epochs: int = config["local_epochs"]
+        split_dataset: bool = config["split_dataset"]
 
-        x_train, y_train = utils.split_dataset(self.x_train, self.y_train, round, max_round)
-        x_val, y_val = utils.split_dataset(self.x_val, self.y_val, round, max_round)
+        x_train, y_train = self.x_train, self.y_train
+        x_val, y_val = self.x_val, self.y_val
+
+        if split_dataset:
+            x_train, y_train = utils.split_dataset(x_train, y_train, round, max_round)
+            x_val, y_val = utils.split_dataset(x_val, y_val, round, max_round)
 
         scaler = utils.get_scaler(config)
         x_train = scaler.transform(x_train)
@@ -83,8 +88,11 @@ class CifarClient(fl.client.NumPyClient):
         round: int = config["round"]
         max_round: int = config["max_round"]
         batch_size: int = config["batch_size"]
-
-        x_test, y_test = utils.split_dataset(self.x_test, self.y_test, round, max_round)
+        split_dataset: bool = config["split_dataset"]
+        
+        x_test, y_test = self.x_test, self.y_test
+        if split_dataset:
+            x_test, y_test = utils.split_dataset(x_test, y_test, round, max_round)
 
         scaler = utils.get_scaler(config)
         x_test = scaler.transform(x_test)
@@ -92,7 +100,7 @@ class CifarClient(fl.client.NumPyClient):
         y_test = utils.label_to_categorical(y_test)
 
         # Evaluate global model parameters on the local test data and return results
-        loss, accuracy = self.model.evaluate(x_test, y_test, batch_size)
+        loss, accuracy, f1, prec, recall = self.model.evaluate(x_test, y_test, batch_size)
         num_examples_test = len(x_test)
         return loss, num_examples_test, {"accuracy": accuracy}
 
@@ -102,9 +110,7 @@ def main() -> None:
 
     parser.add_argument("--host", type=str,default="127.0.0.1")
     parser.add_argument("-p", "--port", type=str,default="18922")
-    parser.add_argument("-t", "--test", type=int,default=1,choices=range(1,9))
-    parser.add_argument("-v", "--val", type=int,default=2,choices=range(1,9))
-    parser.add_argument("-d", "--data", type=int,nargs='+',default=3,choices=range(1,9))
+    parser.add_argument("-d", "--data", type=int,nargs='+',default=3,choices=range(1,5))
 
     args = parser.parse_args()
 
@@ -112,13 +118,13 @@ def main() -> None:
     x_train, y_train = utils.get_dataset(df=utils.load_datasets(datalist))
     
 
-    # Using A Part Train Data for Val
-    x_val, y_val = utils.get_dataset(df=utils.load_dataset_full(args.val))
-    _, x_val, _, y_val  = train_test_split(x_val, y_val, test_size=0.1, stratify=y_val)
+    x_val, y_val = utils.get_dataset(df=utils.load_dataset_validate())
 
-    
-    #Using A Part Test Data for Test
-    x_test, y_test = utils.get_dataset(df=utils.load_dataset_full(args.test))
+    if len(x_val) > 0.1*len(x_train):
+        _, x_val, _, y_val  = train_test_split(x_val, y_val, test_size=0.1*len(x_train)/len(x_val), stratify=y_val)
+
+
+    x_test, y_test = utils.get_dataset(df=utils.load_dataset_test())
     _, x_test, _, y_test  = train_test_split(x_test, y_test, test_size=0.2, stratify=y_test)
 
     # Start Flower client
