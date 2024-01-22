@@ -1,0 +1,18 @@
+======================== CASE 2 ========================
+[3] - Round 2 : {'Normal': 4175, 'Generic': 4225, 'Reconnaissance': 784, 'Analysis': 161, 'Backdoor': 139, 'Worms': 10} 
+[4] - Round 1 : {'Normal': 4085, 'Exploits': 2538, 'Fuzzers': 1399, 'DoS': 926, 'Shellcode': 89} 
+[3] - Round 2 : {'Normal': 8351, 'Generic': 8451, 'Reconnaissance': 1569, 'Analysis': 322, 'Backdoor': 264, 'Worms': 20} 
+[4] - Round 2 : {'Normal': 8303, 'Exploits': 5017, 'Fuzzers': 2723, 'DoS': 1862, 'Shellcode': 168} 
+[3] - Round 3 : {'Normal': 12575, 'Generic': 12659, 'Reconnaissance': 2340, 'Analysis': 477, 'Backdoor': 381, 'Worms': 33} 
+[4] - Round 3 : {'Normal': 12515, 'Exploits': 7460, 'Fuzzers': 4074, 'DoS': 2802, 'Shellcode': 258} 
+[3] - Round 4 : {'Normal': 16650, 'Generic': 16984, 'Reconnaissance': 3146, 'Analysis': 609, 'Backdoor': 525, 'Worms': 39} 
+[4] - Round 4 : {'Normal': 16650, 'Exploits': 10019, 'Fuzzers': 5456, 'DoS': 3680, 'Shellcode': 340} 
+======================== CASE 3 ========================
+[5] - Round 1 : {'Normal': 6663, 'Generic': 1091, 'Exploits': 1605, 'Reconnaissance': 111, 'Fuzzers': 1098, 'DoS': 512, 'Shellcode': 70, 'Analysis': 84, 'Backdoor': 110, 'Worms': 6} 
+[6] - Round 1 : {'Normal': 1721, 'Generic': 3090, 'Exploits': 923, 'Reconnaissance': 673, 'Fuzzers': 290, 'DoS': 371, 'Shellcode': 15, 'Analysis': 61, 'Backdoor': 27, 'Worms': 4} 
+[5] - Round 2 : {'Normal': 13290, 'Generic': 2166, 'Exploits': 3194, 'Reconnaissance': 258, 'Fuzzers': 2149, 'DoS': 1096, 'Shellcode': 146, 'Analysis': 170, 'Backdoor': 221, 'Worms': 10} 
+[6] - Round 2 : {'Normal': 3443, 'Generic': 6271, 'Exploits': 1811, 'Reconnaissance': 1361, 'Fuzzers': 522, 'DoS': 739, 'Shellcode': 33, 'Analysis': 115, 'Backdoor': 49, 'Worms': 6} 
+[5] - Round 3 : {'Normal': 19884, 'Generic': 3248, 'Exploits': 4791, 'Reconnaissance': 375, 'Fuzzers': 3262, 'DoS': 1642, 'Shellcode': 217, 'Analysis': 287, 'Backdoor': 328, 'Worms': 16} 
+[6] - Round 3 : {'Normal': 5143, 'Generic': 9480, 'Exploits': 2695, 'Reconnaissance': 2009, 'Fuzzers': 803, 'DoS': 1088, 'Shellcode': 47, 'Analysis': 182, 'Backdoor': 68, 'Worms': 10} 
+[5] - Round 4 : {'Normal': 26454, 'Generic': 4318, 'Exploits': 6434, 'Reconnaissance': 503, 'Fuzzers': 4387, 'DoS': 2208, 'Shellcode': 276, 'Analysis': 366, 'Backdoor': 430, 'Worms': 23} 
+[6] - Round 4 : {'Normal': 6846, 'Generic': 12666, 'Exploits': 3585, 'Reconnaissance': 2643, 'Fuzzers': 1069, 'DoS': 1472, 'Shellcode': 64, 'Analysis': 243, 'Backdoor': 95, 'Worms': 16} 

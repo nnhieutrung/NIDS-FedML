@@ -82,6 +82,12 @@ def get_scaler(config):
 def calc_class_weights(y):
     class_weights = compute_class_weight(class_weight='balanced', classes=np.unique(y), y=y)
     class_weights = dict(zip(np.unique(y), class_weights))
+
+    labels = get_feature_label('attack_cat')
+    for i in range(len(labels)):
+        if i not in class_weights:
+            class_weights[i] = 0
+
     return class_weights
 
 def label_to_categorical(y):
@@ -101,10 +107,12 @@ def get_model_result(model, x, y, batch_size):
     features_prec = precision_score(y.argmax(axis=-1), pred.argmax(axis=-1), average=None)
     features_recall = recall_score(y.argmax(axis=-1), pred.argmax(axis=-1), average=None)
 
-
+    details = ''
     for i, feature in enumerate(FEATURE_LABELS['attack_cat']):
-        print('%s : f1 = %s, precision = %s, recall = %s' % (feature, features_f1[i], features_prec[i], features_recall[i]))
-
+        details = details + '%s : f1 = %s, precision = %s, recall = %s \n' % (feature, features_f1[i], features_prec[i], features_recall[i])
+        
+    print(details)
+    
     print("Accuracy:" , accuracy)
     
     return {
@@ -112,7 +120,7 @@ def get_model_result(model, x, y, batch_size):
         "precision" : precision,
         "recall" : recall,
         "accuracy" : accuracy,
-    }
+    }, details
 
 # -------------------------
 #       Dataset
@@ -157,12 +165,12 @@ def load_dataset_full(idx : int):
 
 
 def split_dataset(x, y, round, max_round):
-    # if round == max_round:
-    #     return x,y
+    if round == max_round:
+        return x,y
     
-    x_combined = split_list(x, round - 1, max_round)
-    y_combined = split_list(y, round - 1, max_round)
-    # _, x_combined, _, y_combined = train_test_split(x, y, test_size=round/max_round, random_state=42)
+    # x_combined = split_list(x, round - 1, max_round)
+    # y_combined = split_list(y, round - 1, max_round)
+    _, x_combined, _, y_combined = train_test_split(x, y, test_size=round/max_round, random_state=42)
     return x_combined, y_combined
  
 

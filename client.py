@@ -8,6 +8,7 @@ import utils
 # Make TensorFlow logs less verbose
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
+DATALIST = [1]
 
 # Define Flower client
 class CifarClient(fl.client.NumPyClient):
@@ -45,6 +46,22 @@ class CifarClient(fl.client.NumPyClient):
             x_train, y_train = utils.split_dataset(x_train, y_train, round, max_round)
             x_val, y_val = utils.split_dataset(x_val, y_val, round, max_round)
 
+        values = y_train.value_counts()
+
+        labels = utils.get_feature_label('attack_cat')
+
+        value_counts = {}
+        for index, label in enumerate(labels):
+            if index in values:
+                value_counts[label] = values[index]
+        
+        print("Attack Types:", value_counts)
+        
+        with open('client_log', 'a') as file:
+            # Write the line to the file
+            file.write('%s - Round %s : %s \n' % (str(DATALIST), round, str(value_counts)))
+
+
         scaler = utils.get_scaler(config)
         x_train = scaler.transform(x_train)
         x_val = scaler.transform(x_val)
@@ -52,7 +69,7 @@ class CifarClient(fl.client.NumPyClient):
         class_weights = utils.calc_class_weights(y_train)
         y_train = utils.label_to_categorical(y_train)
         y_val = utils.label_to_categorical(y_val)
-
+        print(class_weights)
         # Train the model using hyperparameters from config
         history = self.model.fit(
             x_train,
@@ -74,7 +91,7 @@ class CifarClient(fl.client.NumPyClient):
             "loss": history.history["loss"][0],
             "accuracy": history.history["acc"][0],
             "val_loss": history.history["val_loss"][0],
-            "val_accuracy": history.history["val_acc"][0],
+            "val_accuracy": history.history["val_acc"][0]
         }
         return parameters_prime, num_examples_train, results
 
@@ -110,12 +127,12 @@ def main() -> None:
 
     parser.add_argument("--host", type=str,default="127.0.0.1")
     parser.add_argument("-p", "--port", type=str,default="18922")
-    parser.add_argument("-d", "--data", type=int,nargs='+',default=3,choices=range(1,5))
+    parser.add_argument("-d", "--data", type=int,nargs='+',default=1,choices=range(1,7))
 
     args = parser.parse_args()
-
-    datalist = args.data if isinstance(args.data, list) else [args.data]
-    x_train, y_train = utils.get_dataset(df=utils.load_datasets(datalist))
+    global DATALIST
+    DATALIST = args.data if isinstance(args.data, list) else [args.data]
+    x_train, y_train = utils.get_dataset(df=utils.load_datasets(DATALIST))
     
 
     x_val, y_val = utils.get_dataset(df=utils.load_dataset_validate())

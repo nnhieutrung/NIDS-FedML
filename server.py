@@ -11,7 +11,7 @@ NUM_CLIENTS     = 2
 BATCH_SIZE      = 32
 NUM_EPOCHS      = 100
 NUM_ROUNDS      = 1
-SPLIT_DATASET   = False
+SPLIT_DATASET   = True
 
 
 
@@ -21,7 +21,7 @@ def main() -> None:
     parser.add_argument("-nr", "--nround", type=int,default=4)
     parser.add_argument("-bs", "--bsize", type=int,default=64)
     parser.add_argument("-nl", "--nclient", type=int,default=2)
-    parser.add_argument("-sd", "--sdataset", type=bool,default=False)
+    parser.add_argument("-sd", "--sdataset", type=bool,default=True)
 
     args = parser.parse_args()
     
@@ -86,8 +86,12 @@ def get_evaluate_fn(model, x_test, y_test):
         model.set_weights(parameters)  # Update model with the latest parameters
         loss, accuracy, f1, prec, recall  = model.evaluate(x_test, y_test, BATCH_SIZE)
         result = {"accuracy" : accuracy}
-        result = utils.get_model_result(model, x_test, y_test, BATCH_SIZE)
+        result, details = utils.get_model_result(model, x_test, y_test, BATCH_SIZE)
         model.save('my_model.h5')
+
+        with open('server_log', 'a') as file:
+            file.write('Round %s - details : %s \n' % (server_round, str(details)))
+            file.write('Round %s - result : %s \n' % (server_round, str(result)))
         return loss, result
 
     return evaluate
