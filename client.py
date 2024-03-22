@@ -69,7 +69,7 @@ class CifarClient(fl.client.NumPyClient):
         class_weights = utils.calc_class_weights(y_train)
         y_train = utils.label_to_categorical(y_train)
         y_val = utils.label_to_categorical(y_val)
-        print(class_weights)
+
         # Train the model using hyperparameters from config
         history = self.model.fit(
             x_train,
