@@ -2,11 +2,14 @@ import models
 import json
 import numpy as np
 import pandas as pd
+from ctgan import CTGAN
 from sklearn.preprocessing import MinMaxScaler
 from sklearn.model_selection import train_test_split
 from sklearn.utils import compute_class_weight
 from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score, confusion_matrix
-from tensorflow.keras.utils import to_categorical
+from keras.utils import to_categorical
+
+
 import tensorflow as tf
 
 MULTICLASS = True
@@ -58,6 +61,7 @@ def get_model(inshape: int, lr=LEARNING_RATE):
 # -------------------------
 
 scaler_data = []
+
 
 def init_scaler(scaler : MinMaxScaler):
     global scaler_data
