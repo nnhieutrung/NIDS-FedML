@@ -58,7 +58,7 @@ class BlockchainService():
         w3.eth.send_transaction({
             'from': server_account,
             'to': _client_address,
-            'value': w3.toWei(payment,'ether')
+            'value': w3.to_wei(payment,'ether')
         })
         contribution = contribution_contract_instance.functions.getContribution(_client_address, _rNo)
         return contribution

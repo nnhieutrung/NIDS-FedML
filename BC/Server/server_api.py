@@ -104,9 +104,9 @@ def launch_fl_session(num_rounds:int, is_resume:bool, budget: float):
     strategy = SaveModelStrategy(
         fraction_fit=1,
         fraction_evaluate=1,
-        min_fit_clients=3,
-        min_evaluate_clients=3,
-        min_available_clients=3,
+        min_fit_clients=2,
+        min_evaluate_clients=2,
+        min_available_clients=2,
         evaluate_fn=get_evaluate_fn(model),
         on_fit_config_fn=get_on_fit_config_fn(),
         on_evaluate_config_fn=evaluate_config,
