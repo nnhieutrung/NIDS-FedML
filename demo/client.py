@@ -134,7 +134,6 @@ def main() -> None:
     DATALIST = args.data if isinstance(args.data, list) else [args.data]
     x_train, y_train = utils.get_dataset(df=utils.load_datasets(DATALIST))
     
-
     x_val, y_val = utils.get_dataset(df=utils.load_dataset_validate())
 
     if len(x_val) > 0.1*len(x_train):

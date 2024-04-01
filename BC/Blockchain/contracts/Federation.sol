@@ -21,7 +21,7 @@ contract Federation{
     mapping (uint => mapping(uint => mapping(address => Weight))) weights;
     mapping (uint => mapping(uint => GlobalModel)) models;
     mapping (uint => Strategy) strategies;
-    event addStrategyEvent(string _algoName, uint _num_client, uint _num_round);
+    event addStrategyEvent(string _algoName, uint _num_round, uint _num_client);
 
     // Add & Get Weights
     function addWeight(uint _session, uint _round_num, uint _dataSize, string memory _filePath, string memory _fileHash) public {

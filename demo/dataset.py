@@ -27,21 +27,21 @@ def load_datasets(idxs : list[str]):
     return df
 
 def load_dataset_train():
-    df = pd.read_csv("./dataset/UNSW_NB15_training-set.csv")
+    df = pd.read_csv(".../dataset/UNSW_NB15_training-set.csv")
     return df
 
 def load_dataset_validate():
-    df = pd.read_csv("./dataset/UNSW_NB15_validating-set.csv")
+    df = pd.read_csv(".../dataset/UNSW_NB15_validating-set.csv")
     return df
 
 def load_dataset_test():
-    df = pd.read_csv("./dataset/UNSW_NB15_testing-set.csv")
+    df = pd.read_csv(".../dataset/UNSW_NB15_testing-set.csv")
     return df
 
 
 def load_dataset_full(idx : int):
     print("loading dataset: ", idx)
-    df = pd.read_csv("./dataset/UNSW_NB15-" + str(idx) + ".csv")
+    df = pd.read_csv(".../dataset/UNSW_NB15-" + str(idx) + ".csv")
     return df
 
 
