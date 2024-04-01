@@ -65,4 +65,4 @@ Recommend (Client 0: 8001, Client 1: 8002, ...)
     - Client 0: run `GET / Testfast` client_id = 0
     - Client 1: run `GET / Testfast` client_id = 1
 
-- Launch FL: Setup parameters and excute ACTION
+- Launch FL: Setup parameters and execute ACTION
