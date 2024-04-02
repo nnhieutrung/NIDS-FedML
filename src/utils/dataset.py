@@ -2,41 +2,40 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 
+
 from config import *
+
+
 
 # -------------------------
 #       Dataset
 # -------------------------
+
+def change_dataset(dataset: str):
+    get_dataset_config(dataset)
+
 def get_dataset(df : pd.DataFrame):
     df = feature_labelencoding(df)
 
-    x = df[['dur', 'proto', 'service', 'state', 'spkts', 'dpkts', 'sbytes',
-       'dbytes', 'sttl', 'dttl', 'sload', 'dload', 'sloss', 'dloss', 'sinpkt',
-       'dinpkt', 'sjit', 'djit', 'swin', 'stcpb', 'dtcpb', 'dwin', 'tcprtt',
-       'synack', 'ackdat', 'smean', 'dmean', 'trans_depth',
-       'response_body_len', 'ct_srv_src', 'ct_state_ttl', 'ct_dst_ltm',
-       'ct_src_dport_ltm', 'ct_dst_sport_ltm', 'ct_dst_src_ltm',
-       'is_ftp_login', 'ct_ftp_cmd', 'ct_flw_http_mthd', 'ct_src_ltm',
-       'ct_srv_dst', 'is_sm_ips_ports']]
-    y = df['attack_cat'] if MULTICLASS else df['label']
+    x = df[INPUT_FEATURE]
+    y = df[OUTPUT_FEATURE]
     return x.astype('float32'), y.astype('int32')
 
 def load_dataset_train():
-    df = pd.read_csv("./dataset/training-set.csv")
+    df = pd.read_csv(DATASET_PATH + "training-set.csv")
     return df
 
 def load_dataset_validate():
-    df = pd.read_csv("./dataset/validating-set.csv")
+    df = pd.read_csv(DATASET_PATH + "validating-set.csv")
     return df
 
 def load_dataset_test():
-    df = pd.read_csv("./dataset/testing-set.csv")
+    df = pd.read_csv(DATASET_PATH + "testing-set.csv")
     return df
-
 
 def load_dataset_full(idx : int):
     print("loading dataset: ", idx)
-    df = pd.read_csv("./dataset/training-set_" + str(idx) + ".csv")
+    df = pd.read_csv(DATASET_PATH + "training-set_" + str(idx) + ".csv")
     return df
 
 
@@ -63,11 +62,6 @@ def normalize_dataframe(df : pd.DataFrame):
     """
     df = df.applymap(lambda x: x.strip() if isinstance(x, str) else x)
     df = df.replace(r'^\s*$', np.nan, regex=True)
-    return df
-
-
-def features_selection(df : pd.DataFrame):
-    df = df[['dur', 'proto', 'service', 'state', 'spkts', 'dpkts', 'sbytes', 'dbytes', 'sttl', 'dttl', 'sload', 'dload', 'sloss', 'dloss', 'sinpkt', 'dinpkt', 'sjit', 'djit', 'swin', 'stcpb', 'dtcpb', 'dwin', 'tcprtt', 'synack', 'ackdat', 'smean', 'dmean', 'trans_depth', 'response_body_len', 'ct_srv_src', 'ct_state_ttl', 'ct_dst_ltm', 'ct_src_dport_ltm', 'ct_dst_sport_ltm', 'ct_dst_src_ltm', 'is_ftp_login', 'ct_ftp_cmd', 'ct_flw_http_mthd', 'ct_src_ltm', 'ct_srv_dst', 'is_sm_ips_ports', 'attack_cat', 'label']]
     return df
 
 

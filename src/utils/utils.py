@@ -70,7 +70,7 @@ def calc_class_weights(y):
     class_weights = compute_class_weight(class_weight='balanced', classes=np.unique(y), y=y)
     class_weights = dict(zip(np.unique(y), class_weights))
 
-    labels = dataset.get_feature_label('attack_cat')
+    labels = dataset.get_feature_label(OUTPUT_FEATURE)
     for i in range(len(labels)):
         if i not in class_weights:
             class_weights[i] = 0
@@ -95,7 +95,7 @@ def get_model_result(model, x, y, batch_size):
     features_recall = recall_score(y.argmax(axis=-1), pred.argmax(axis=-1), average=None)
 
     details = ''
-    for i, feature in enumerate(FEATURE_LABELS['attack_cat']):
+    for i, feature in enumerate(FEATURE_LABELS[OUTPUT_FEATURE]):
         details = details + '%s : f1 = %s, precision = %s, recall = %s \n' % (feature, features_f1[i], features_prec[i], features_recall[i])
         
     print(details)
