@@ -28,13 +28,13 @@ if gpus:
 
 
 def get_model(inshape: int, lr=LEARNING_RATE):
-    # model = models.model_test(lr=lr,inshape=inshape,nclass=MODEL_OUTSHAPE)
-    model = models.model_conv1D(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
-    # model = models.model_test(lr=lr,inshape=inshape,nclass=MODEL_OUTSHAPE)
-    # model = models.model_dense(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
-    # model = models.model_lstm(lr=lr,N=64,inshape=inshape,nclass=MODEL_OUTSHAPE)
-    # model = models.model_conv1D_large(lr=lr,nfeat=inshape,nclass=MODEL_OUTSHAPE)
-    # model = models.model_conv1D_binary(lr=lr,nfeat=inshape,nclass=MODEL_OUTSHAPE)
+    # model = models.model_test(lr=lr,inshape=inshape,nclass=dataset.get_model_outshape())
+    model = models.model_conv1D(lr=lr,N=64,inshape=inshape,nclass=dataset.get_model_outshape())
+    # model = models.model_test(lr=lr,inshape=inshape,nclass=dataset.get_model_outshape())
+    # model = models.model_dense(lr=lr,N=64,inshape=inshape,nclass=dataset.get_model_outshape())
+    # model = models.model_lstm(lr=lr,N=64,inshape=inshape,nclass=dataset.get_model_outshape())
+    # model = models.model_conv1D_large(lr=lr,nfeat=inshape,nclass=dataset.get_model_outshape())
+    # model = models.model_conv1D_binary(lr=lr,nfeat=inshape,nclass=dataset.get_model_outshape())
     return model
 
 
@@ -70,7 +70,7 @@ def calc_class_weights(y):
     class_weights = compute_class_weight(class_weight='balanced', classes=np.unique(y), y=y)
     class_weights = dict(zip(np.unique(y), class_weights))
 
-    labels = dataset.get_feature_label(OUTPUT_FEATURE)
+    labels = dataset.get_output_feature_labels()
     for i in range(len(labels)):
         if i not in class_weights:
             class_weights[i] = 0
@@ -78,7 +78,7 @@ def calc_class_weights(y):
     return class_weights
 
 def label_to_categorical(y):
-    return to_categorical(y, MODEL_OUTSHAPE)
+    return to_categorical(y, dataset.get_model_outshape())
 
 
 
@@ -95,7 +95,7 @@ def get_model_result(model, x, y, batch_size):
     features_recall = recall_score(y.argmax(axis=-1), pred.argmax(axis=-1), average=None)
 
     details = ''
-    for i, feature in enumerate(FEATURE_LABELS[OUTPUT_FEATURE]):
+    for i, feature in enumerate(dataset.get_output_feature_labels()):
         details = details + '%s : f1 = %s, precision = %s, recall = %s \n' % (feature, features_f1[i], features_prec[i], features_recall[i])
         
     print(details)

@@ -14,7 +14,7 @@ from services.bc_server_service import BlockchainService
 
 from utils import utils
 from utils import dataset
-
+from dataset.config import *
 
 app=FastAPI()
 blockchainService = BlockchainService()
@@ -35,17 +35,6 @@ def getTrainingSessions():
     json_compatible_item_data = jsonable_encoder(trainingSessions)
     return JSONResponse(content=json_compatible_item_data)
 
-@app.get('/getModel')
-def getModel():
-    with open('config_training.json', 'r') as config_training:
-        config=config_training.read()
-        data = json.loads(config)
-        session = data['session']
-        num_round = data['num_rounds']
-    model = blockchainService.getModel(session,num_round)
-    # Conver Python list to JSON
-    json_compatible_item_data = jsonable_encoder(model)
-    return JSONResponse(content=json_compatible_item_data)
 
 @app.post("/launchFL")
 def launch_fl_session(num_rounds:int, num_clients:int, is_resume:bool, budget: float):
@@ -140,6 +129,17 @@ def launch_fl_session(num_rounds:int, num_clients:int, is_resume:bool, budget: f
                 number_of_rounds= num_rounds
             )
 
+
+
+# Endpoint to set dataset
+@app.post("/setDataset")
+def set_dataset(name: str):
+    if name not in DATASET_CONFIG:
+        return {"error": "Invalid dataset name"}
+    
+    dataset.change_dataset(name)
+
+    return dataset.get_dataset_path()
  
 @app.get('/')
 def testFAST():

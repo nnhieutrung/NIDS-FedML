@@ -16,5 +16,5 @@ DATASET_CONFIG = {
             'ct_srv_dst', 'is_sm_ips_ports'
         ],
         "OUTPUT_FEATURE" : 'attack_cat'
-    }
+    },
 }

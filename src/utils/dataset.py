@@ -4,15 +4,56 @@ from sklearn.model_selection import train_test_split
 
 
 from config import *
+from dataset.config import *
+
+FEATURE_LABELS = None
+INPUT_FEATURE = None
+OUTPUT_FEATURE = None
+DATASET = None
+DATASET_PATH = None
+MODEL_OUTSHAPE = None
 
 
+
+def get_feature_labels():
+    return FEATURE_LABELS
+
+def get_input_feature():
+    return INPUT_FEATURE
+
+def get_output_feature():
+    return OUTPUT_FEATURE
+
+def get_dataset():
+    return DATASET
+
+def get_dataset_path():
+    return DATASET_PATH
+
+def get_model_outshape():
+    return MODEL_OUTSHAPE
+
+def change_dataset(dataset):
+    global DATASET 
+    global FEATURE_LABELS
+    global INPUT_FEATURE
+    global OUTPUT_FEATURE
+    global DATASET_PATH 
+    global MODEL_OUTSHAPE
+
+    DATASET = dataset
+    FEATURE_LABELS = DATASET_CONFIG[dataset]['FEATURE_LABELS']
+    INPUT_FEATURE = DATASET_CONFIG[dataset]['INPUT_FEATURE']
+    OUTPUT_FEATURE = DATASET_CONFIG[dataset]['OUTPUT_FEATURE']
+    DATASET_PATH = './dataset/' + dataset + '/'
+    MODEL_OUTSHAPE = len(FEATURE_LABELS[OUTPUT_FEATURE])
+
+
+change_dataset('UNSW_NB15')
 
 # -------------------------
 #       Dataset
 # -------------------------
-
-def change_dataset(dataset: str):
-    get_dataset_config(dataset)
 
 def get_dataset(df : pd.DataFrame):
     df = feature_labelencoding(df)
@@ -76,6 +117,11 @@ def drop_sparse_columns(df: pd.DataFrame, threshold: float) -> pd.DataFrame:
 
 def get_feature_label(feature):
     return FEATURE_LABELS[feature]
+
+
+def get_output_feature_labels():
+    return get_feature_label(OUTPUT_FEATURE)
+
 
 def feature_labelencoding(df : pd.DataFrame):
     for feature in FEATURE_LABELS:
