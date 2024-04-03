@@ -47,7 +47,10 @@ def change_dataset(dataset):
     OUTPUT_FEATURE = DATASET_CONFIG[dataset]['OUTPUT_FEATURE']
     DATASET_PATH = './dataset/' + dataset + '/'
     MODEL_OUTSHAPE = len(FEATURE_LABELS[OUTPUT_FEATURE])
+    print("Dataset: ", dataset)
 
+def get_dataset_type():
+    return DATASET
 
 change_dataset('UNSW_NB15')
 

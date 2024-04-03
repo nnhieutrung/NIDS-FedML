@@ -55,7 +55,7 @@ def handle_event(event):
     print(event)
     from client import FLlaunch
     FLlaunch = FLlaunch()
-    FLlaunch.start()
+    FLlaunch.start(event.args.dataset)
 
 def log_loop(event_filter, poll_interval):
     print(event_filter.get_new_entries())

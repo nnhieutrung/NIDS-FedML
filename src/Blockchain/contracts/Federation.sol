@@ -16,12 +16,13 @@ contract Federation{
         string algoName;
         uint numRounds;
         uint numClients;
+        string dataset;
     }
 
     mapping (uint => mapping(uint => mapping(address => Weight))) weights;
     mapping (uint => mapping(uint => GlobalModel)) models;
     mapping (uint => Strategy) strategies;
-    event addStrategyEvent(string _algoName, uint _num_round, uint _num_client);
+    event addStrategyEvent(string _algoName, uint _num_round, uint _num_client, string dataset);
 
     // Add & Get Weights
     function addWeight(uint _session, uint _round_num, uint _dataSize, string memory _filePath, string memory _fileHash) public {
@@ -52,12 +53,13 @@ contract Federation{
 
 
     // Add & Get Strategy
-    function addStartegy(uint _session, string memory _algoName, uint _numRounds, uint _numClients) public returns(string memory no){
+    function addStrategy(uint _session, string memory _algoName, uint _numRounds, uint _numClients, string memory _dataset) public returns(string memory no){
         strategies[_session].algoName = _algoName;
         strategies[_session].numRounds = _numRounds;
         strategies[_session].numClients = _numClients;
+        strategies[_session].dataset = _dataset;
         
-        emit addStrategyEvent(_algoName, _numRounds, _numClients);
+        emit addStrategyEvent(_algoName, _numRounds, _numClients, _dataset);
         return "Strategy added";
     }
 

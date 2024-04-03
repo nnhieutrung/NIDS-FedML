@@ -45,9 +45,9 @@ class BlockchainService():
                 results.append(contrib_dic)
         return results
 
-    def addStrategy(self, _session:int, _algoName: str, _numRounds: int, _numClients: int):
+    def addStrategy(self, _session:int, _algoName: str, _numRounds: int, _numClients: int, _dataset: str):
         server_account = w3.eth.accounts[0]
-        federation_contract_instance.functions.addStartegy(_session, _algoName, _numRounds, _numClients).transact({'from': server_account})
+        federation_contract_instance.functions.addStrategy(_session, _algoName, _numRounds, _numClients, _dataset).transact({'from': server_account})
         strategy = federation_contract_instance.functions.getStrategy(_session).call()
         return strategy
     

@@ -18,6 +18,7 @@ import numpy as np
 
 from utils import dataset
 from utils import utils
+from dataset.config import *
 
 # Parse command line argument `partition`
 # parser = argparse.ArgumentParser(description="Flower")
@@ -32,7 +33,8 @@ CLIENT_ID = None
 print(tf.config.list_physical_devices('GPU'))
 
 class FLlaunch:
-    def start(self):
+    def start(self, dataset):
+        set_dataset(dataset)
         listen_and_participate(CLIENT_ID)
 
 
@@ -102,3 +104,12 @@ def getConfusionMaxtrixAfterFL():
 
 
     
+# Endpoint to set dataset
+@app.post("/setDataset")
+def set_dataset(name: str):
+    if name not in DATASET_CONFIG:
+        return {"error": "Invalid dataset name"}
+    
+    dataset.change_dataset(name)
+    
+    return dataset.get_dataset_path()

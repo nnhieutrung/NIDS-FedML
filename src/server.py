@@ -109,7 +109,7 @@ def launch_fl_session(num_rounds:int, num_clients:int, is_resume:bool, budget: f
     )
 
     # Add strategy to the blockchain
-    strat_added_BC = blockchainService.addStrategy(session,'FedAvg',num_rounds,strategy.__getattribute__('min_available_clients'))
+    strat_added_BC = blockchainService.addStrategy(session,'FedAvg',num_rounds,strategy.__getattribute__('min_available_clients'), dataset.get_dataset_type())
 
     # Start Flower server
     fl.server.start_server(
