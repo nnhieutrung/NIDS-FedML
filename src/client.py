@@ -33,8 +33,9 @@ CLIENT_ID = None
 print(tf.config.list_physical_devices('GPU'))
 
 class FLlaunch:
-    def start(self, dataset):
-        set_dataset(dataset)
+    def start(self, dataset_name):
+        dataset.change_dataset(dataset_name)
+        print(dataset.get_dataset_path())
         listen_and_participate(CLIENT_ID)
 
 
@@ -104,12 +105,3 @@ def getConfusionMaxtrixAfterFL():
 
 
     
-# Endpoint to set dataset
-@app.post("/setDataset")
-def set_dataset(name: str):
-    if name not in DATASET_CONFIG:
-        return {"error": "Invalid dataset name"}
-    
-    dataset.change_dataset(name)
-    
-    return dataset.get_dataset_path()

@@ -85,9 +85,9 @@ class SaveModelStrategy(fl.server.strategy.FedAvg):
                 os.makedirs(f"./save-weights/fl_sessions/Session-{session}")
                 
             if  server_round < num_rounds:
-                np.save(f"./save-weights/fl_sessions/Session-{session}/round-{server_round}-weights.npy", aggregated_weights)
+                np.save(f"./save-weights/fl_sessions/Session-{session}/round-{server_round}-weights.npy", np.asanyarray(aggregated_weights, dtype="object"))
             elif server_round==num_rounds:
-                np.save(f"./save-weights/fl_sessions/Session-{session}/global_session_{session}_model.npy", aggregated_weights)
+                np.save(f"./save-weights/fl_sessions/Session-{session}/global_session_{session}_model.npy", np.asanyarray(aggregated_weights, dtype="object"))
                 file_path = f'./save-weights/fl_sessions/Session-{session}/global_session_{session}_model.npy'
                 with open(file_path,"rb") as f:
                     bytes = f.read() # read entire file as bytes

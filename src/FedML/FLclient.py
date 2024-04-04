@@ -5,7 +5,12 @@ import numpy as np
 import random
 import tensorflow as tf
 import flwr as fl
+import pandas as pd
+from io import StringIO
+from ctgan import CTGAN
+import sys
 
+from config import *
 from services.bc_client_service import *
 from utils.ipfs import *
 from utils import utils
@@ -48,16 +53,16 @@ class CifarClient(fl.client.NumPyClient):
         batch_size: int = config["batch_size"]
         epochs: int = config["local_epochs"]
         session: int = config["session"]
-        round: int = config["round"]
+        _round: int = config["round"]
         max_round: int = config["max_round"]
 
 
-        x_train, y_train = dataset.split_dataset(self.x_train, self.y_train, round, max_round)
-        x_val, y_val = dataset.split_dataset(self.x_val, self.y_val, round, max_round)
+        x_train, y_train = dataset.split_dataset(self.x_train, self.y_train, _round, max_round)
+        x_val, y_val = dataset.split_dataset(self.x_val, self.y_val, _round, max_round)
         
         values = y_train.value_counts()
 
-        labels = dataset.get_feature_label('attack_cat')
+        labels = dataset.get_output_feature_labels()
 
         value_counts = {}
         for index, label in enumerate(labels):
@@ -68,9 +73,62 @@ class CifarClient(fl.client.NumPyClient):
         
         with open('./logs/client_log', 'a') as file:
             # Write the line to the file
-            file.write('%s - Round %s : %s \n' % (self.client_id, round, str(value_counts)))
+            file.write('%s - Round %s : %s \n' % (self.client_id, _round, str(value_counts)))
 
 
+        # CTGAN
+
+        train_data = pd.concat([x_train, y_train], axis=1, join="inner")
+        maxRows = len(train_data)
+
+        print(maxRows)
+
+        CTGAN_maxRows, CTGAN_minRows = blockchainService.getCTGANMaxRows(_session=session, _roundNum=_round, _numRows=maxRows, client_id=self.client_id)
+
+        print(CTGAN_maxRows, CTGAN_minRows)
+        if CTGAN_maxRows - CTGAN_minRows > 0:
+            if maxRows == CTGAN_maxRows:
+                print("CTGAN ready for make datafake")
+
+                ctgan_data = train_data[1:1]
+                for val in train_data[dataset.get_output_feature()].unique():
+                    val_data = train_data[train_data[dataset.get_output_feature()] == val]
+                    if len(val_data) > CTGAN_LENGTH:
+                        val_data = val_data.sample(n=CTGAN_LENGTH, random_state=42)
+                    ctgan_data = pd.concat([ctgan_data, val_data])
+
+
+                ctgan = CTGAN(verbose=True, epochs=CTGAN_NUM_EPOCHS)
+                ctgan.fit(ctgan_data, ctgan_data.columns)
+                datafake = ctgan.sample(CTGAN_maxRows-CTGAN_minRows)
+                datafake=datafake.to_csv()
+                
+                print("sending datafake to blockchain")
+                for i in range(0, len(datafake), DATAFAKE_ETH_SIZE):
+                    percent = i/len(datafake)
+                    sys.stdout.write('\r')
+                    sys.stdout.write("[%-20s] %d%% : %d/%d" % ('='*round(percent*21), round(percent*100), i, len(datafake)))
+                    sys.stdout.flush()
+                    blockchainService.sendCTGANDatafake(_session=session, _roundNum=_round, _datafake=datafake[i:i+DATAFAKE_ETH_SIZE], _complete=(i+DATAFAKE_ETH_SIZE) >= len(datafake), client_id=self.client_id)
+                print("send complete")
+            
+            else:
+                print("CTGAN wait datafake from another node")
+                train_fake = blockchainService.getCTGANDatafake(_session=session, _roundNum=_round)
+
+                train_fake = pd.read_csv(StringIO(train_fake))
+                
+                train_fake = train_fake[:(CTGAN_maxRows-maxRows)]
+
+                print("Received " + str(len(train_fake)) + " datafake")
+                x_train_fake, y_train_fake = dataset.get_xy_dataset(train_fake)
+                
+                x_train = pd.concat([x_train, x_train_fake])
+                y_train = pd.concat([y_train, y_train_fake])
+           
+
+        print("Training with " + str(len(x_train)) + " rows")
+        
         scaler = utils.get_scaler(config)
         x_train = scaler.transform(x_train)
         x_val = scaler.transform(x_val)
@@ -115,14 +173,16 @@ class CifarClient(fl.client.NumPyClient):
         if not (os.path.exists(f'./save-weights/Local-weights/Client-{self.client_id}/Session-{session}')):
             os.mkdir(f"./save-weights/Local-weights/Client-{self.client_id}/Session-{session}")       
 
-        filename = f'./save-weights/Local-weights/Client-{self.client_id}/Session-{session}/Round-{round}-training-weights.npy'
-        np.save(filename, parameters_prime)
+        filename = f'./save-weights/Local-weights/Client-{self.client_id}/Session-{session}/Round-{_round}-training-weights.npy'
+
+        np.save(filename, np.asanyarray(parameters_prime, dtype="object"))
+
         with open(filename,"rb") as f:
             bytes = f.read() # read entire file as bytes
             readable_hash = hashlib.sha256(bytes).hexdigest() #hash the file
             print(readable_hash)
 
-        bcResult = blockchainService.addWeight(_session=session,_round_num=round, _dataSize=num_examples_train, _filePath = filename, _fileHash = readable_hash, client_id=self.client_id)
+        bcResult = blockchainService.addWeight(_session=session,_roundNum=_round, _dataSize=num_examples_train, _filePath = filename, _fileHash = readable_hash, client_id=self.client_id)
         return parameters_prime, num_examples_train, results
 
     def evaluate(self, parameters, config):
@@ -151,18 +211,5 @@ class CifarClient(fl.client.NumPyClient):
         loss, accuracy, f1, prec, recall = self.model.evaluate(x_test, y_test, batch_size)
         num_examples_test = len(self.x_test)
 
-        # Create directory for global weights
-        try:
-            if not (os.path.exists(f'./save-weights/Global-weights')):
-                os.mkdir(f"./save-weights/Global-weights")
-
-            if not (os.path.exists(f'./save-weights/Global-weights/Session-{session}')):
-                os.mkdir(f"./save-weights/Global-weights/Session-{session}")
-
-            filename = f'./save-weights/Global-weights/Session-{session}/Round-{round}-Global-weights.npy'
-            if not (os.path.exists(filename)):
-                np.save(filename, global_rnd_model)
-        except NameError:
-            print(NameError)
 
         return loss, num_examples_test, {"accuracy": accuracy}

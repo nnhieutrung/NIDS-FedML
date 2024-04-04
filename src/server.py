@@ -37,8 +37,16 @@ def getTrainingSessions():
 
 
 @app.post("/launchFL")
-def launch_fl_session(num_rounds:int, num_clients:int, is_resume:bool, budget: float):
+def launch_fl_session(num_rounds:int, num_clients:int, is_resume:bool, budget: float, dataset_name: str):
     """Start server and trigger update_strategy then connect to clients to perform fl session"""
+
+    if dataset_name not in DATASET_CONFIG:
+        return {"error": "Invalid dataset name"}
+    
+    dataset.change_dataset(dataset_name)
+    print(dataset.get_dataset_path())
+ 
+ 
     session = int(time.time())
     x_test, y_test = dataset.get_dataset(df=dataset.load_dataset_test())
 
@@ -131,15 +139,6 @@ def launch_fl_session(num_rounds:int, num_clients:int, is_resume:bool, budget: f
 
 
 
-# Endpoint to set dataset
-@app.post("/setDataset")
-def set_dataset(name: str):
-    if name not in DATASET_CONFIG:
-        return {"error": "Invalid dataset name"}
-    
-    dataset.change_dataset(name)
-
-    return dataset.get_dataset_path()
  
 @app.get('/')
 def testFAST():

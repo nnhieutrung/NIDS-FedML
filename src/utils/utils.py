@@ -28,6 +28,8 @@ if gpus:
 
 
 def get_model(inshape: int, lr=LEARNING_RATE):
+    print("Get model for", dataset.get_dataset_path())
+ 
     # model = models.model_test(lr=lr,inshape=inshape,nclass=dataset.get_model_outshape())
     model = models.model_conv1D(lr=lr,N=64,inshape=inshape,nclass=dataset.get_model_outshape())
     # model = models.model_test(lr=lr,inshape=inshape,nclass=dataset.get_model_outshape())

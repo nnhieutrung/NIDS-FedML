@@ -1,10 +1,9 @@
 from web3 import Web3
 import json
 import math
+from config import *
 
-
-rpcServer = 'HTTP://127.0.0.1:8545'
-w3 = Web3(Web3.HTTPProvider(rpcServer))
+w3 = Web3(Web3.HTTPProvider(ETH_SERVER))
 
 contributionSC = open('.//blockchain//build//contracts//Contribution.json')
 contributionData = json.load(contributionSC)
@@ -63,14 +62,14 @@ class BlockchainService():
         contribution = contribution_contract_instance.functions.getContribution(_client_address, _rNo)
         return contribution
 
-    def addModel(self, _session:int, _round_num:int, _filePath:str, _fileHash:str):
+    def addModel(self, _session:int, _roundNum:int, _filePath:str, _fileHash:str):
         server_account = w3.eth.accounts[0]
-        federation_contract_instance.functions.addModel(_session,_round_num,_filePath,_fileHash).transact({'from':server_account})
-        model = federation_contract_instance.functions.getModel(_session,_round_num).call()
+        federation_contract_instance.functions.addModel(_session,_roundNum,_filePath,_fileHash).transact({'from':server_account})
+        model = federation_contract_instance.functions.getModel(_session,_roundNum).call()
         return model
     
-    def getModel(self, _session:int, _round_num:int):
-        model = federation_contract_instance.functions.getModel(_session,_round_num).call()
+    def getModel(self, _session:int, _roundNum:int):
+        model = federation_contract_instance.functions.getModel(_session,_roundNum).call()
         return model
 
     def getTrainingSessions(self):
@@ -92,6 +91,6 @@ class BlockchainService():
             results.append(session_dict)
         return results
 
-    def getLastModel(self,_session:int, _round_num:int):
-        model = federation_contract_instance.functions.getModel(_session,_round_num).call()
+    def getLastModel(self,_session:int, _roundNum:int):
+        model = federation_contract_instance.functions.getModel(_session,_roundNum).call()
         return model

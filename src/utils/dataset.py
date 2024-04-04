@@ -61,6 +61,9 @@ change_dataset('UNSW_NB15')
 def get_dataset(df : pd.DataFrame):
     df = feature_labelencoding(df)
 
+    return get_xy_dataset(df)
+
+def get_xy_dataset(df : pd.DataFrame):
     x = df[INPUT_FEATURE]
     y = df[OUTPUT_FEATURE]
     return x.astype('float32'), y.astype('int32')
