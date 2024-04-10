@@ -35,7 +35,7 @@ DATASET_CONFIG = {
         ],
         "OUTPUT_FEATURE" : 'attack_cat'
     },
-    "ToI_IoT" : {
+    "ToN_IoT" : {
         "FEATURE_LABELS" : {
          "proto" : ['udp', 'icmp', 'tcp', ],
         "service" : ['-', 'http', 'ssl', 'ftp', 'gssapi', 'smb', 'dce_rpc', 'dns', 'smb;gssapi'],
