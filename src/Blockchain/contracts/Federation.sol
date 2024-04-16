@@ -27,14 +27,15 @@ contract Federation{
         uint numClients;
     }
 
+
     mapping (uint => mapping(uint => mapping(address => Weight))) weights;
     mapping (uint => mapping(uint => GlobalModel)) models;
     mapping (uint => Strategy) strategies;
-    mapping (uint => mapping(uint => CTGAN)) ctgans;
+    mapping (uint => mapping(uint => mapping(uint => CTGAN))) ctgans;
 
     event addStrategyEvent(string _algoName, uint _num_round, uint _num_client, string _dataset);
-    event addCTGANFitEvent(uint maxRows, uint minRows);
-    event addCTGANDatafakeEvent(string datafake, bool complete);
+    event addCTGANFitEvent(uint datatype, uint maxRows, uint minRows);
+    event addCTGANDatafakeEvent(uint datatype, string datafake, bool complete);
 
     // Add & Get Weights
     function addWeight(uint _session, uint _roundNum, uint _dataSize, string memory _filePath, string memory _fileHash) public {
@@ -84,31 +85,31 @@ contract Federation{
 
 
     // Add & Get CTGAN DataFake
-    function addDatasetInfo(uint _session, uint _roundNum, uint _numRows) public {
-        if (ctgans[_session][_roundNum].clients[msg.sender] == 0) {
-            ctgans[_session][_roundNum].clients[msg.sender] = _numRows;
+    function addDatasetInfo(uint _session, uint _roundNum, uint _datatype, uint _numRows) public {
+        if (ctgans[_session][_roundNum][_datatype].clients[msg.sender] == 0) {
+            ctgans[_session][_roundNum][_datatype].clients[msg.sender] = _numRows;
 
-            if (_numRows > ctgans[_session][_roundNum].maxRows) {
-                ctgans[_session][_roundNum].maxRows = _numRows;
-                ctgans[_session][_roundNum].maxClient = msg.sender;
+            if (_numRows > ctgans[_session][_roundNum][_datatype].maxRows) {
+                ctgans[_session][_roundNum][_datatype].maxRows = _numRows;
+                ctgans[_session][_roundNum][_datatype].maxClient = msg.sender;
             }
 
-            if (ctgans[_session][_roundNum].minRows == 0 || _numRows < ctgans[_session][_roundNum].minRows) {
-                ctgans[_session][_roundNum].minRows = _numRows;
+            if (ctgans[_session][_roundNum][_datatype].minRows == 0 || _numRows < ctgans[_session][_roundNum][_datatype].minRows) {
+                ctgans[_session][_roundNum][_datatype].minRows = _numRows;
             }
 
 
-            ctgans[_session][_roundNum].numClients++;
+            ctgans[_session][_roundNum][_datatype].numClients++;
 
-            if (strategies[_session].numClients == ctgans[_session][_roundNum].numClients) {
-                emit addCTGANFitEvent(ctgans[_session][_roundNum].maxRows, ctgans[_session][_roundNum].minRows);
+            if (strategies[_session].numClients == ctgans[_session][_roundNum][_datatype].numClients) {
+                emit addCTGANFitEvent(_datatype, ctgans[_session][_roundNum][_datatype].maxRows, ctgans[_session][_roundNum][_datatype].minRows);
             }
         }
     }
 
-    function addDatafake(uint _session, uint _roundNum, string memory _datafake, bool _complete) public {
-        if (ctgans[_session][_roundNum].maxClient == msg.sender) {
-            emit addCTGANDatafakeEvent(_datafake, _complete);
+    function addDatafake(uint _session, uint _roundNum, uint _datatype, string memory _datafake, bool _complete) public {
+        if (ctgans[_session][_roundNum][_datatype].maxClient == msg.sender) {
+            emit addCTGANDatafakeEvent(_datatype, _datafake, _complete);
         }
     }
 }   

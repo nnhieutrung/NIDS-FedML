@@ -52,7 +52,7 @@ def change_dataset(dataset):
 def get_dataset_type():
     return DATASET
 
-change_dataset('ToN_IoT')
+change_dataset(list(DATASET_CONFIG.keys())[0])
 
 # -------------------------
 #       Dataset

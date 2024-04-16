@@ -74,15 +74,15 @@ def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_re
         data['ctgan'] = enable_ctgan
         json.dump(data,config_training)
 
-    if not (os.path.exists(f'./logs/Session-{session}')):
-        os.mkdir(f"./logs/Session-{session}")      
+    if not (os.path.exists(f'./results/Session-{session}')):
+        os.mkdir(f"./results/Session-{session}")      
 
-    with open('./logs/Session-{session}/info', 'a') as file:
-        file.write('session: {session}')
-        file.write('num_rounds: {num_rounds}')
-        file.write('is_resume: {is_resume}')
-        file.write('dataset: {dataset_name}')
-        file.write('ctgan: {enable_ctgan}')
+    with open(f'./results/Session-{session}/info', 'a') as file:
+        file.write(f'\nsession: {session}')
+        file.write(f'\nnum_rounds: {num_rounds}')
+        file.write(f'\nis_resume: {is_resume}')
+        file.write(f'\ndataset: {dataset_name}')
+        file.write(f'\nctgan: {enable_ctgan}')
 
     # Load last session parameters if they exist
     if not (os.path.exists('./save-weights/fl_sessions')):

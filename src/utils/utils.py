@@ -6,6 +6,7 @@ from sklearn.utils import compute_class_weight
 from sklearn.metrics import f1_score, precision_score, recall_score, accuracy_score, confusion_matrix
 from keras.utils import to_categorical
 import tensorflow as tf
+import matplotlib.pyplot as plt
 
 from config import *
 from utils import dataset
@@ -85,7 +86,7 @@ def label_to_categorical(y):
 
 
 def get_model_result(model, x, y, batch_size):
-    pred = model.predict(x,batch_size=batch_size)
+    pred = model.predict(x, batch_size=batch_size)
 
     f1 = f1_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="weighted")
     precision = precision_score(y.argmax(axis=-1), pred.argmax(axis=-1), average="weighted")
@@ -111,3 +112,70 @@ def get_model_result(model, x, y, batch_size):
         "accuracy" : accuracy,
     }, details
 
+
+
+def plot_confussion_matrix(model, x_test, y_test, batch_size, path):
+    pred = model.predict(x_test, batch_size=batch_size)
+    confusion  = tf.math.confusion_matrix(
+        labels=y_test.argmax(axis=1),
+        predictions=pred.argmax(axis=1),
+        num_classes=10    
+    )
+    print(confusion)
+    conf_matrix = np.array(confusion)
+    # print(conf_matrix)
+
+    plt.figure().clear()
+    plt.close()
+    plt.clf()
+
+    fig, ax = plt.subplots(figsize=(7.5, 7.5))
+    ax.matshow(conf_matrix, cmap=plt.cm.Blues, alpha = 1)
+    for i in range(conf_matrix.shape[0]):
+        for j in range(conf_matrix.shape[1]):
+            ax.text(x=j, y=i,s=conf_matrix[i, j]/10, va='center', ha='center', size='x-large')
+
+    
+    plt.xlabel('Predictions', fontsize=18)
+    plt.ylabel('Actuals', fontsize=18)
+    plt.title('Confusion Matrix', fontsize=18)
+    plt.savefig(path)
+    
+
+def plot_model_result(model, x, y, batch_size, path):
+    pred = model.predict(x, batch_size=batch_size)
+    # Data
+    categories = dataset.get_output_feature_labels()
+    f1_scores = f1_score(y.argmax(axis=-1), pred.argmax(axis=-1), average=None)
+    precisions = precision_score(y.argmax(axis=-1), pred.argmax(axis=-1), average=None)
+    recalls = recall_score(y.argmax(axis=-1), pred.argmax(axis=-1), average=None)
+
+    # Transpose data
+    data = np.array([f1_scores, precisions, recalls])
+
+
+    plt.figure().clear()
+    plt.close()
+    plt.clf()
+
+
+    # Plotting
+    plt.figure(figsize=(10, 6))
+
+    bar_width = 0.25
+    index = np.arange(len(categories))
+    
+    plt.grid(axis='y', color = '#5A616E', linestyle = '--', linewidth = 0.5)
+
+    plt.bar(index, data[0], bar_width, label='F1 Score', color='#3B74E5')
+    plt.bar(index + bar_width, data[1], bar_width, label='Precision', color='#4CBD3B')
+    plt.bar(index + 2*bar_width, data[2], bar_width, label='Recall', color='#F47710')
+
+    plt.ylabel('Score')
+    plt.xlabel('Class')
+    plt.xticks(index + bar_width, categories, rotation=45)
+    plt.title('Performance Metrics for Each Class')
+    plt.legend()
+
+    plt.tight_layout()
+    plt.savefig(path)

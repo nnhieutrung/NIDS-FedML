@@ -171,13 +171,15 @@ def get_evaluate_fn(model, x_test, y_test):
             session=data['session']
 
 
-        if not (os.path.exists(f'./logs/Session-{session}')):
-            os.mkdir(f"./logs/Session-{session}")      
+        if not (os.path.exists(f'./results/Session-{session}')):
+            os.mkdir(f"./results/Session-{session}")      
 
-        with open('./logs/Session-{session}/server_log', 'a') as file:
+        with open(f'./results/Session-{session}/server_log', 'a') as file:
             file.write('Round %s - details : %s \n' % (server_round, str(details)))
             file.write('Round %s - result : %s \n' % (server_round, str(result)))
 
+        utils.plot_confussion_matrix(model, x_test, y_test, BATCH_SIZE, f'./results/Session-{session}/confussion_matrix-round_{server_round}.png')
+        utils.plot_model_result(model, x_test, y_test, BATCH_SIZE, f'./results/Session-{session}/metrics-round_{server_round}.png')
         return loss, {"accuracy": accuracy}
 
     return evaluate

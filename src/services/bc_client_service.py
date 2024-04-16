@@ -53,32 +53,36 @@ class BlockchainService():
         return contributions
     
 
-    def getCTGANMaxRows(self, _session: int, _roundNum: int, _numRows: int, client_id: int):
+    def getCTGANMaxRows(self, _session: int, _roundNum: int, _datatype: int, _numRows: int, client_id: int):
         client_address = w3.eth.accounts[client_id+1]
-        federation_contract_instance.functions.addDatasetInfo(_session, _roundNum, _numRows).transact({'from': client_address})
+        federation_contract_instance.functions.addDatasetInfo(_session, _roundNum, _datatype, _numRows).transact({'from': client_address})
         while True:
+   
             events = ctgan_sync_filter.get_new_entries()
             if len(events) > 0:
                 print(events[-1])
                 return events[-1].args.maxRows, events[-1].args.minRows
             time.sleep(1)
 
-    def sendCTGANDatafake(self, _session: int, _roundNum: int, _datafake: str, _complete: bool, client_id: int):
+    def sendCTGANDatafake(self, _session: int, _roundNum: int, _datatype: int, _datafake: str, _complete: bool, client_id: int):
         client_address = w3.eth.accounts[client_id+1]
-        federation_contract_instance.functions.addDatafake(_session, _roundNum, _datafake, _complete).transact({'from': client_address})
+        federation_contract_instance.functions.addDatafake(_session, _roundNum, _datatype, _datafake, _complete).transact({'from': client_address})
         
-    def getCTGANDatafake(self, _session: int, _roundNum: int):
+    def getCTGANDatafake(self, _session: int, _roundNum: int, _datatype: int):
         datafake = ""
         while True:
             for event in ctgan_datafake_filter.get_new_entries():
-                datafake = datafake + event.args.datafake
+                print(_datatype, event.args.datatype)
+                if _datatype == event.args.datatype:
+                    datafake = datafake + event.args.datafake
 
-                sys.stdout.write('\r')
-                sys.stdout.write("Receiving %d bytes of datafake" % (len(datafake)))
-                sys.stdout.flush()
-                
-                if (event.args.complete):
-                    return datafake
+                    sys.stdout.write('\r')
+                    sys.stdout.write("Receiving %d bytes of datafake" % (len(datafake)))
+                    sys.stdout.flush()
+                    
+                    if (event.args.complete):
+                        return datafake
+                    
             time.sleep(0.01)
 
 

@@ -71,10 +71,10 @@ class CifarClient(fl.client.NumPyClient):
         
         print("Attack Types:", value_counts)
         
-        if not (os.path.exists(f'./logs/Session-{session}')):
-            os.mkdir(f"./logs/Session-{session}") 
+        if not (os.path.exists(f'./results/Session-{session}')):
+            os.mkdir(f"./results/Session-{session}") 
         
-        with open('./logs/Session-{session}/client_log', 'a') as file:
+        with open(f'./results/Session-{session}/client_log', 'a') as file:
             # Write the line to the file
             file.write('%s - Round %s : %s \n' % (self.client_id, _round, str(value_counts)))
 
@@ -85,51 +85,67 @@ class CifarClient(fl.client.NumPyClient):
             
             train_data = pd.concat([x_train, y_train], axis=1, join="inner")
             maxRows = len(train_data)
+            ctgan = None
+            
+            for datatype, feature in enumerate(dataset.get_output_feature_labels()):
+                maxRows = 0
+                if values[datatype]:
+                    maxRows = int(values[datatype])
+                print(f"{feature}: {maxRows}")
 
-            print(maxRows)
+                CTGAN_maxRows, CTGAN_minRows = blockchainService.getCTGANMaxRows(_session=session, _roundNum=_round, _datatype=datatype, _numRows=maxRows, client_id=self.client_id)
 
-            CTGAN_maxRows, CTGAN_minRows = blockchainService.getCTGANMaxRows(_session=session, _roundNum=_round, _numRows=maxRows, client_id=self.client_id)
+                print(CTGAN_maxRows, CTGAN_minRows)
+                if CTGAN_maxRows - CTGAN_minRows > 0:
+                    if maxRows == CTGAN_maxRows:
+                        print("CTGAN ready for make datafake")
 
-            print(CTGAN_maxRows, CTGAN_minRows)
-            if CTGAN_maxRows - CTGAN_minRows > 0:
-                if maxRows == CTGAN_maxRows:
-                    print("CTGAN ready for make datafake")
+                        if ctgan is None:
+                            ctgan_data = train_data[1:1]
+                            for val in train_data[dataset.get_output_feature()].unique():
+                                val_data = train_data[train_data[dataset.get_output_feature()] == val].drop_duplicates()
+                                if len(val_data) > CTGAN_LENGTH:
+                                    val_data = val_data.sample(n=CTGAN_LENGTH, random_state=42)
+                                ctgan_data = pd.concat([ctgan_data, val_data])
 
-                    ctgan_data = train_data[1:1]
-                    for val in train_data[dataset.get_output_feature()].unique():
-                        val_data = train_data[train_data[dataset.get_output_feature()] == val]
-                        if len(val_data) > CTGAN_LENGTH:
-                            val_data = val_data.sample(n=CTGAN_LENGTH, random_state=42)
-                        ctgan_data = pd.concat([ctgan_data, val_data])
+                            ctgan = CTGAN(verbose=True, epochs=CTGAN_NUM_EPOCHS)
+                            ctgan.fit(ctgan_data, ctgan_data.columns)
 
+                        datalength = CTGAN_maxRows-CTGAN_minRows
+                        datafake = train_data[1:1] 
 
-                    ctgan = CTGAN(verbose=True, epochs=CTGAN_NUM_EPOCHS)
-                    ctgan.fit(ctgan_data, ctgan_data.columns)
-                    datafake = ctgan.sample(CTGAN_maxRows-CTGAN_minRows)
-                    datafake=datafake.to_csv()
+                        while datafake.shape[0] < datalength*10:
+                            datafake = pd.concat([datafake, ctgan.sample(datalength)])
+                            datafake = datafake[datafake[dataset.get_output_feature()] == datatype].drop_duplicates()
+
+                        datafake = datafake.sample(n=datalength, random_state=42)
+
+                        print(datafake[dataset.get_output_feature()].value_counts())
+
+                        datafake=datafake.to_csv()
+                        
+                        print("sending datafake to blockchain")
+                        for i in range(0, len(datafake), DATAFAKE_ETH_SIZE):
+                            percent = i/len(datafake)
+                            sys.stdout.write('\r')
+                            sys.stdout.write("[%-20s] %d%% : %d/%d" % ('='*round(percent*21), round(percent*100), i, len(datafake)))
+                            sys.stdout.flush()
+                            blockchainService.sendCTGANDatafake(_session=session, _roundNum=_round, _datatype=datatype, _datafake=datafake[i:i+DATAFAKE_ETH_SIZE], _complete=(i+DATAFAKE_ETH_SIZE) >= len(datafake), client_id=self.client_id)
+                        print("send complete")
                     
-                    print("sending datafake to blockchain")
-                    for i in range(0, len(datafake), DATAFAKE_ETH_SIZE):
-                        percent = i/len(datafake)
-                        sys.stdout.write('\r')
-                        sys.stdout.write("[%-20s] %d%% : %d/%d" % ('='*round(percent*21), round(percent*100), i, len(datafake)))
-                        sys.stdout.flush()
-                        blockchainService.sendCTGANDatafake(_session=session, _roundNum=_round, _datafake=datafake[i:i+DATAFAKE_ETH_SIZE], _complete=(i+DATAFAKE_ETH_SIZE) >= len(datafake), client_id=self.client_id)
-                    print("send complete")
-                
-                else:
-                    print("CTGAN wait datafake from another node")
-                    train_fake = blockchainService.getCTGANDatafake(_session=session, _roundNum=_round)
+                    else:
+                        print("CTGAN wait datafake from another node")
+                        train_fake = blockchainService.getCTGANDatafake(_session=session, _roundNum=_round, _datatype=datatype)
 
-                    train_fake = pd.read_csv(StringIO(train_fake))
-                    
-                    train_fake = train_fake[:(CTGAN_maxRows-maxRows)]
+                        train_fake = pd.read_csv(StringIO(train_fake))
+                        
+                        train_fake = train_fake[:(CTGAN_maxRows-maxRows)]
 
-                    print("Received " + str(len(train_fake)) + " datafake")
-                    x_train_fake, y_train_fake = dataset.get_xy_dataset(train_fake)
-                    
-                    x_train = pd.concat([x_train, x_train_fake])
-                    y_train = pd.concat([y_train, y_train_fake])
+                        print("Received " + str(len(train_fake)) + " datafake")
+                        x_train_fake, y_train_fake = dataset.get_xy_dataset(train_fake)
+                        
+                        x_train = pd.concat([x_train, x_train_fake])
+                        y_train = pd.concat([y_train, y_train_fake])
             
 
         print("Training with " + str(len(x_train)) + " rows")
