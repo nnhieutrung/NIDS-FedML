@@ -47,4 +47,19 @@ DATASET_CONFIG = {
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'
     },
+    "ToN_IoT_unique" : {
+        "FEATURE_LABELS" : {
+         "proto" : ['udp', 'icmp', 'tcp', ],
+        "service" : ['-', 'http', 'ssl', 'ftp', 'gssapi', 'smb', 'dce_rpc', 'dns', 'smb;gssapi'],
+        "conn_state" : ['OTH', 'SF', 'S0', 'S1', 'REJ', 'S3', 'SH', 'RSTRH', 'SHR', 'RSTO', 'RSTR', 'RSTOS0', 'S2'],
+        "weird_name" : ['-','possible_split_routing', 'bad_TCP_checksum', 'bad_UDP_checksum', 'active_connection_reuse', 'data_before_established', 'inappropriate_FIN', 'above_hole_data_without_any_acks', 'DNS_RR_unknown_type', 'dnp3_corrupt_header_checksum', 'connection_originator_SYN_ack'],
+        "weird_addl" : ['-','46','48'],
+        "weird_notice": ['-','F'],
+        "type" :  ['normal', 'backdoor', 'ddos', 'dos', 'injection', 'password', 'ransomware', 'scanning', 'xss', 'mitm'],
+        },
+        "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
+           'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
+            'weird_name', 'weird_addl', 'weird_notice','label'],
+        "OUTPUT_FEATURE" : 'type'
+    },
 }
