@@ -47,4 +47,14 @@ DATASET_CONFIG = {
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'
     },
+    "BoT_IoT" : {
+        "FEATURE_LABELS" : {
+        "proto" : ['udp', 'icmp', 'tcp', 'arp','ipv6-icmp'],
+        "category" : ['DoS', 'DDoS', 'Reconnaissance', 'Normal', 'Theft'],
+        },
+        "INPUT_FEATURE" : ['proto', 'seq','stddev',
+                           'N_IN_Conn_P_SrcIP','min','mean',
+                           'N_IN_Conn_P_DstIP','drate','srate','max','attack','category'],
+        "OUTPUT_FEATURE" : 'category'
+    },
 }
