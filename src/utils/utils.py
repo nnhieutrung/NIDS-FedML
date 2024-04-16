@@ -115,6 +115,7 @@ def get_model_result(model, x, y, batch_size):
 
 
 def plot_confussion_matrix(model, x_test, y_test, batch_size, path):
+    categories = dataset.get_output_feature_labels()
     pred = model.predict(x_test, batch_size=batch_size)
     confusion  = tf.math.confusion_matrix(
         labels=y_test.argmax(axis=1),
@@ -125,10 +126,6 @@ def plot_confussion_matrix(model, x_test, y_test, batch_size, path):
     conf_matrix = np.array(confusion)
     # print(conf_matrix)
 
-    plt.figure().clear()
-    plt.close()
-    plt.clf()
-
     fig, ax = plt.subplots(figsize=(7.5, 7.5))
     ax.matshow(conf_matrix, cmap=plt.cm.Blues, alpha = 1)
     for i in range(conf_matrix.shape[0]):
@@ -138,8 +135,10 @@ def plot_confussion_matrix(model, x_test, y_test, batch_size, path):
     
     plt.xlabel('Predictions', fontsize=18)
     plt.ylabel('Actuals', fontsize=18)
+    plt.xticks(np.arange(len(categories)), categories, rotation=30)
+    plt.yticks(np.arange(len(categories)), categories)
     plt.title('Confusion Matrix', fontsize=18)
-    plt.savefig(path)
+    plt.savefig(path, dpi = 300, bbox_inches = 'tight')
     
 
 def plot_model_result(model, x, y, batch_size, path):
@@ -152,12 +151,6 @@ def plot_model_result(model, x, y, batch_size, path):
 
     # Transpose data
     data = np.array([f1_scores, precisions, recalls])
-
-
-    plt.figure().clear()
-    plt.close()
-    plt.clf()
-
 
     # Plotting
     plt.figure(figsize=(10, 6))
@@ -178,4 +171,4 @@ def plot_model_result(model, x, y, batch_size, path):
     plt.legend()
 
     plt.tight_layout()
-    plt.savefig(path)
+    plt.savefig(path, dpi = 300, bbox_inches = 'tight')
