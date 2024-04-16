@@ -78,7 +78,12 @@ def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_re
         os.mkdir(f"./logs/Session-{session}")      
 
     with open('./logs/Session-{session}/info', 'a') as file:
-        file.write('{}')
+        file.write('session: {session}')
+        file.write('num_rounds: {num_rounds}')
+        file.write('is_resume: {is_resume}')
+        file.write('dataset: {dataset_name}')
+        file.write('ctgan: {enable_ctgan}')
+
     # Load last session parameters if they exist
     if not (os.path.exists('./save-weights/fl_sessions')):
     # create fl_sessions directory if first time
