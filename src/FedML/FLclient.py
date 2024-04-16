@@ -7,6 +7,7 @@ import tensorflow as tf
 import flwr as fl
 import pandas as pd
 from io import StringIO
+import torch
 from ctgan import CTGAN
 import sys
 
@@ -23,7 +24,9 @@ ctgan = None
 # Make TensorFlow logs less verbose
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
-
+print(torch.cuda.is_available())
+print(torch.cuda.get_device_name(0))
+print(torch.device(0))
 # Define Flower client
 class CifarClient(fl.client.NumPyClient):
     def __init__(self, model, x_train, y_train, x_test, y_test, x_val, y_val, client_id, client_address):
