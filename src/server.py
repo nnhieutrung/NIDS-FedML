@@ -1,6 +1,7 @@
 import os
 import json
 import time
+from datetime import datetime
 import numpy as np
 
 import flwr as fl
@@ -74,6 +75,9 @@ def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_re
         data['ctgan'] = enable_ctgan
         json.dump(data,config_training)
 
+
+    start_time = datetime.now()
+
     if not (os.path.exists(f'./results/Session-{session}')):
         os.mkdir(f"./results/Session-{session}")      
 
@@ -83,6 +87,8 @@ def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_re
         file.write(f'\nis_resume: {is_resume}')
         file.write(f'\ndataset: {dataset_name}')
         file.write(f'\nctgan: {enable_ctgan}')
+        file.write(f'\nstart_time: {start_time.strftime("%H:%M:%S %d/%m/%Y")}')
+
 
     # Load last session parameters if they exist
     if not (os.path.exists('./save-weights/fl_sessions')):
@@ -147,6 +153,13 @@ def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_re
                 number_of_rounds= num_rounds
             )
 
+    end_time = datetime.now()
+    time_taken = end_time - start_time
+    print("Time taken: {:02d}:{:02d}:{:02d}".format(time_taken.seconds // 3600, (time_taken.seconds % 3600) // 60, time_taken.seconds % 60))
+
+    with open(f'./results/Session-{session}/info', 'a') as file:
+        file.write(f'\nend_time: {end_time.strftime("%H:%M:%S %d/%m/%Y")}')
+        file.write(f'\nlength_time: {"{:02d}:{:02d}:{:02d}".format(time_taken.seconds // 3600, (time_taken.seconds % 3600) // 60, time_taken.seconds % 60)}')
 
 
  

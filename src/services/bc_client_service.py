@@ -72,7 +72,6 @@ class BlockchainService():
         datafake = ""
         while True:
             for event in ctgan_datafake_filter.get_new_entries():
-                print(_datatype, event.args.datatype)
                 if _datatype == event.args.datatype:
                     datafake = datafake + event.args.datafake
 

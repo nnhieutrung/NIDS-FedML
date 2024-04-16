@@ -114,7 +114,7 @@ class CifarClient(fl.client.NumPyClient):
                         datalength = CTGAN_maxRows-CTGAN_minRows
                         datafake = train_data[1:1] 
 
-                        while datafake.shape[0] < datalength*10:
+                        while datafake.shape[0] < datalength*2:
                             datafake = pd.concat([datafake, ctgan.sample(datalength)])
                             datafake = datafake[datafake[dataset.get_output_feature()] == datatype].drop_duplicates()
 

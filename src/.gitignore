@@ -1,5 +1,6 @@
 save-weights/*
 results/*
+config_training.json
 
 
 
