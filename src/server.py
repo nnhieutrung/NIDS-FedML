@@ -74,6 +74,11 @@ def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_re
         data['ctgan'] = enable_ctgan
         json.dump(data,config_training)
 
+    if not (os.path.exists(f'./logs/Session-{session}')):
+        os.mkdir(f"./logs/Session-{session}")      
+
+    with open('./logs/Session-{session}/info', 'a') as file:
+        file.write('{}')
     # Load last session parameters if they exist
     if not (os.path.exists('./save-weights/fl_sessions')):
     # create fl_sessions directory if first time
