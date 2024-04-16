@@ -1,4 +1,4 @@
-ETH_SERVER = 'HTTP://127.0.0.1:8545'
+ETH_SERVER = 'HTTP://localhost:8545'
 
 
 LEARNING_RATE   = 1e-3

@@ -4,7 +4,7 @@ import time
 import numpy as np
 
 import flwr as fl
-from fastapi import FastAPI
+from fastapi import FastAPI, Query
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from sklearn.preprocessing import MinMaxScaler
@@ -36,10 +36,11 @@ def getTrainingSessions():
     return JSONResponse(content=json_compatible_item_data)
 
 
+    
 @app.post("/launchFL")
-def launch_fl_session(num_rounds:int, num_clients:int, is_resume:bool, budget: float, dataset_name: str):
+def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_resume:bool = Query(False), budget: float = Query(100), dataset_name: str = Query(enum=[key for key in DATASET_CONFIG]), enable_ctgan: bool = Query(True)):
     """Start server and trigger update_strategy then connect to clients to perform fl session"""
-
+    print(dataset_name, is_resume)
     if dataset_name not in DATASET_CONFIG:
         return {"error": "Invalid dataset name"}
     
@@ -60,20 +61,19 @@ def launch_fl_session(num_rounds:int, num_clients:int, is_resume:bool, budget: f
 
     with open('config_training.json', 'w+') as config_training:
         config=config_training.read()        
+
         try :
             data = json.loads(config)
-            data['num_rounds']=num_rounds
-            data['is_resume']=is_resume
-            data['session']= session
-            json.dump(data,config_training)
-
         except json.JSONDecodeError:
             data={}
-            data['num_rounds']=num_rounds
-            data['is_resume']=is_resume
-            data['session']= session
-            json.dump(data,config_training)
-    
+
+        data['num_rounds']=num_rounds
+        data['is_resume']=is_resume
+        data['session']= session
+        data['dataset'] = dataset_name
+        data['ctgan'] = enable_ctgan
+        json.dump(data,config_training)
+
     # Load last session parameters if they exist
     if not (os.path.exists('./save-weights/fl_sessions')):
     # create fl_sessions directory if first time

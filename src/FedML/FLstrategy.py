@@ -37,7 +37,7 @@ class SaveModelStrategy(fl.server.strategy.FedAvg):
         evaluate_metrics_aggregation_fn=None,
         on_fit_config_fn=None,
         on_evaluate_config_fn=None,
-        initial_parameters:fl.common.Parameters = None
+        initial_parameters:fl.common.Parameters = None,
         ) -> None:
         super().__init__(
             fraction_fit=fraction_fit,
@@ -184,12 +184,14 @@ def get_on_fit_config_fn(max_round: int) -> Callable[[int], Dict[str, str]]:
             config=config_training.read()
             data = json.loads(config)
             session=data['session']
+            enable_ctgan=data['ctgan']
         config = {
             "batch_size": BATCH_SIZE,
             "max_round" : max_round,
             "local_epochs": NUM_EPOCHS,
             "round": server_round,
             "session": session,
+            "enable_ctgan": enable_ctgan
         }
 
         config = utils.set_scaler(config)
