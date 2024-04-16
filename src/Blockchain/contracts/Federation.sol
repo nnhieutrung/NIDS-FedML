@@ -94,7 +94,7 @@ contract Federation{
                 ctgans[_session][_roundNum][_datatype].maxClient = msg.sender;
             }
 
-            if (ctgans[_session][_roundNum][_datatype].minRows == 0 || _numRows < ctgans[_session][_roundNum][_datatype].minRows) {
+            if (ctgans[_session][_roundNum][_datatype].numClients == 0 || _numRows < ctgans[_session][_roundNum][_datatype].minRows) {
                 ctgans[_session][_roundNum][_datatype].minRows = _numRows;
             }
 
