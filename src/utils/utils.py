@@ -127,18 +127,19 @@ def plot_confussion_matrix(model, x_test, y_test, batch_size, path):
     conf_matrix = np.array(confusion)
     # print(conf_matrix)
 
-    fig, ax = plt.subplots(figsize=(7.5, 7.5))
+    fig, ax = plt.subplots(figsize=(12, 12))
     ax.matshow(conf_matrix, cmap=plt.cm.Blues, alpha = 1)
     for i in range(conf_matrix.shape[0]):
+        total = sum(conf_matrix[i])
         for j in range(conf_matrix.shape[1]):
-            ax.text(x=j, y=i,s=conf_matrix[i, j]/10, va='center', ha='center', size='x-large')
+            ax.text(x=j, y=i,s=f'{conf_matrix[i, j]}\n{conf_matrix[i, j]/total*100:.2f}%', va='center', ha='center', size='x-large')
 
     
-    plt.xlabel('Predictions', fontsize=18)
-    plt.ylabel('Actuals', fontsize=18)
-    plt.xticks(np.arange(len(categories)), categories, rotation=30)
-    plt.yticks(np.arange(len(categories)), categories)
-    plt.title('Confusion Matrix', fontsize=18)
+    plt.xlabel('Predictions', fontsize=20)
+    plt.ylabel('Actuals', fontsize=20)
+    plt.xticks(np.arange(len(categories)), categories, rotation=26, fontsize=12)
+    plt.yticks(np.arange(len(categories)), categories, fontsize=12)
+    plt.title('Confusion Matrix', fontsize=30)
     plt.savefig(path, dpi = 300, bbox_inches = 'tight')
     
 
@@ -165,10 +166,10 @@ def plot_model_result(model, x, y, batch_size, path):
     plt.bar(index + bar_width, data[1], bar_width, label='Precision', color='#4CBD3B')
     plt.bar(index + 2*bar_width, data[2], bar_width, label='Recall', color='#F47710')
 
-    plt.ylabel('Score')
-    plt.xlabel('Class')
-    plt.xticks(index + bar_width, categories, rotation=45)
-    plt.title('Performance Metrics for Each Class')
+    plt.ylabel('Score', fontsize=14)
+    plt.xlabel('Class', fontsize=14)
+    plt.xticks(index + bar_width, categories, rotation=45, fontsize=12)
+    plt.title('Performance Metrics for Each Class', fontsize=20)
     plt.legend()
 
     plt.tight_layout()
