@@ -18,7 +18,7 @@ from utils import dataset
 
 
 blockchainService = BlockchainService()
-
+ctgan = None
 
 # Make TensorFlow logs less verbose
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
@@ -55,7 +55,7 @@ class CifarClient(fl.client.NumPyClient):
         session: int = config["session"]
         _round: int = config["round"]
         max_round: int = config["max_round"]
-        ctgan: bool = config["enable_ctgan"]
+        enable_ctgan: bool = config["enable_ctgan"]
 
         x_train, y_train = dataset.split_dataset(self.x_train, self.y_train, _round, max_round)
         x_val, y_val = dataset.split_dataset(self.x_val, self.y_val, _round, max_round)
@@ -80,12 +80,11 @@ class CifarClient(fl.client.NumPyClient):
 
 
         # CTGAN
-        if ctgan:
+        if enable_ctgan:
             print("Using CTGAN")
             
-            train_data = pd.concat([x_train, y_train], axis=1, join="inner")
-            maxRows = len(train_data)
-            ctgan = None
+            train_data = pd.concat([self.x_train, self.y_train], axis=1, join="inner")
+            global ctgan
             
             for datatype, feature in enumerate(dataset.get_output_feature_labels()):
                 maxRows = 0
