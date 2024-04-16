@@ -88,7 +88,7 @@ class CifarClient(fl.client.NumPyClient):
             
             for datatype, feature in enumerate(dataset.get_output_feature_labels()):
                 maxRows = 0
-                if values[datatype]:
+                if datatype in values:
                     maxRows = int(values[datatype])
                 print(f"{feature}: {maxRows}")
 
