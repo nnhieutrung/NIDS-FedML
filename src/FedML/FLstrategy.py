@@ -164,7 +164,17 @@ def get_evaluate_fn(model, x_test, y_test):
         result = {"accuracy" : accuracy}
         result, details = utils.get_model_result(model, x_test, y_test, BATCH_SIZE)
 
-        with open('./logs/server_log', 'a') as file:
+
+        with open('./config_training.json', 'r') as config_training:
+            config=config_training.read()
+            data = json.loads(config)
+            session=data['session']
+
+
+        if not (os.path.exists(f'./logs/Session-{session}')):
+            os.mkdir(f"./logs/Session-{session}")      
+
+        with open('./logs/Session-{session}/server_log', 'a') as file:
             file.write('Round %s - details : %s \n' % (server_round, str(details)))
             file.write('Round %s - result : %s \n' % (server_round, str(result)))
 

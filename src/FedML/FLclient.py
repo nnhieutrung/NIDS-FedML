@@ -71,7 +71,10 @@ class CifarClient(fl.client.NumPyClient):
         
         print("Attack Types:", value_counts)
         
-        with open('./logs/client_log', 'a') as file:
+        if not (os.path.exists(f'./logs/Session-{session}')):
+            os.mkdir(f"./logs/Session-{session}") 
+        
+        with open('./logs/Session-{session}/client_log', 'a') as file:
             # Write the line to the file
             file.write('%s - Round %s : %s \n' % (self.client_id, _round, str(value_counts)))
 
