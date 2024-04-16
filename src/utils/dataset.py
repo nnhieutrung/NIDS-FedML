@@ -52,7 +52,7 @@ def change_dataset(dataset):
 def get_dataset_type():
     return DATASET
 
-change_dataset('UNSW_NB15')
+change_dataset('ToN_IoT')
 
 # -------------------------
 #       Dataset

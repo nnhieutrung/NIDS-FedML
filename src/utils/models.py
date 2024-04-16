@@ -1,6 +1,7 @@
-from tensorflow.keras.layers import Flatten,Dense, Input,Dropout, Conv1D, AvgPool1D, BatchNormalization
-from tensorflow.keras.models import Model, Sequential
-from tensorflow.keras import optimizers,layers,losses
+from tensorflow import keras
+from keras.layers import Flatten,Dense, Input,Dropout, Conv1D, AvgPool1D, BatchNormalization
+from keras.models import Model, Sequential
+from keras import optimizers,layers,losses
 from tensorflow_addons.metrics import F1Score
 from keras.metrics import Recall, Precision
 
