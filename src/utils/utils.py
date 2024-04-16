@@ -121,7 +121,7 @@ def plot_confussion_matrix(model, x_test, y_test, batch_size, path):
         predictions=pred.argmax(axis=1),
         num_classes=10    
     )
-    print(confusion)
+    
     conf_matrix = np.array(confusion)
     # print(conf_matrix)
 
