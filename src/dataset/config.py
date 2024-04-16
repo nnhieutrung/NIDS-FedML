@@ -47,16 +47,6 @@ DATASET_CONFIG = {
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'
     },
-    "BoT_IoT" : {
-        "FEATURE_LABELS" : {
-        "proto" : ['udp', 'icmp', 'tcp', 'arp','ipv6-icmp'],
-        "category" : ['DoS', 'DDoS', 'Reconnaissance', 'Normal', 'Theft'],
-        },
-        "INPUT_FEATURE" : ['proto', 'seq','stddev',
-                           'N_IN_Conn_P_SrcIP','min','mean',
-                           'N_IN_Conn_P_DstIP','drate','srate','max','attack','category'],
-        "OUTPUT_FEATURE" : 'category'
-    },
     "ToN_IoT_unique" : {
         "FEATURE_LABELS" : {
          "proto" : ['udp', 'icmp', 'tcp', ],
@@ -71,5 +61,15 @@ DATASET_CONFIG = {
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'
+    },
+    "BoT_IoT" : {
+        "FEATURE_LABELS" : {
+        "proto" : ['udp', 'icmp', 'tcp', 'arp','ipv6-icmp'],
+        "category" : ['DoS', 'DDoS', 'Reconnaissance', 'Normal', 'Theft'],
+        },
+        "INPUT_FEATURE" : ['proto', 'seq','stddev',
+                           'N_IN_Conn_P_SrcIP','min','mean',
+                           'N_IN_Conn_P_DstIP','drate','srate','max','attack','category'],
+        "OUTPUT_FEATURE" : 'category'
     },
 }
