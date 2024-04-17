@@ -27,7 +27,7 @@ DATASET_CONFIG = {
         "weird_notice": ['-','F'],
         "type" :  ['normal', 'backdoor', 'ddos', 'dos', 'injection', 'password', 'ransomware', 'scanning', 'xss', 'mitm'],
         },
-        "INPUT_FEATURE" : ['proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
+        "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'
@@ -42,7 +42,7 @@ DATASET_CONFIG = {
         "weird_notice": ['-','F'],
         "type" :  ['normal', 'backdoor', 'ddos', 'dos', 'injection', 'password', 'ransomware', 'scanning', 'xss', 'mitm'],
         },
-        "INPUT_FEATURE" : ['proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
+        "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'
@@ -57,7 +57,7 @@ DATASET_CONFIG = {
         "weird_notice": ['-','F'],
         "type" :  ['normal', 'backdoor', 'ddos', 'dos', 'injection', 'password', 'ransomware', 'scanning', 'xss', 'mitm'],
         },
-        "INPUT_FEATURE" : ['proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
+        "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'
@@ -72,7 +72,7 @@ DATASET_CONFIG = {
         "weird_notice": ['-','F'],
         "type" :  ['normal', 'backdoor', 'ddos', 'dos', 'injection', 'password', 'ransomware', 'scanning', 'xss', 'mitm'],
         },
-        "INPUT_FEATURE" : ['proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
+        "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'

@@ -87,6 +87,10 @@ def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_re
         file.write(f'\nis_resume: {is_resume}')
         file.write(f'\ndataset: {dataset_name}')
         file.write(f'\nctgan: {enable_ctgan}')
+        file.write(f'\nctgan_epochs: {CTGAN_NUM_EPOCHS}')
+        file.write(f'\nctgan_length: {CTGAN_LENGTH}')
+        file.write(f'\nbatch_size: {BATCH_SIZE}')
+        file.write(f'\nepochs: {NUM_EPOCHS}')
         file.write(f'\nstart_time: {start_time.strftime("%H:%M:%S %d/%m/%Y")}')
 
 
