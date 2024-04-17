@@ -121,7 +121,7 @@ def plot_confussion_matrix(model, x_test, y_test, batch_size, path):
     confusion  = tf.math.confusion_matrix(
         labels=y_test.argmax(axis=1),
         predictions=pred.argmax(axis=1),
-        num_classes=10    
+        num_classes=len(categories)
     )
     
     conf_matrix = np.array(confusion)
