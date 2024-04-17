@@ -39,7 +39,7 @@ def getTrainingSessions():
 
     
 @app.post("/launchFL")
-def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_resume:bool = Query(False), budget: float = Query(100), dataset_name: str = Query(enum=[key for key in DATASET_CONFIG]), enable_ctgan: bool = Query(True)):
+def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_resume:bool = Query(False), budget: float = Query(100), dataset_name: str = Query(enum=[key for key in DATASET_CONFIG]), enable_ctgan: bool = Query(False)):
     """Start server and trigger update_strategy then connect to clients to perform fl session"""
     print(dataset_name, is_resume)
     if dataset_name not in DATASET_CONFIG:
@@ -166,6 +166,13 @@ def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_re
         file.write(f'\nlength_time: {"{:02d}:{:02d}:{:02d}".format(time_taken.seconds // 3600, (time_taken.seconds % 3600) // 60, time_taken.seconds % 60)}')
 
 
+@app.post("/launchListFL")
+def launch_fl_list(num_rounds:int= Query(4), num_clients:int= Query(2), is_resume:bool = Query(False), budget: float = Query(100),dataset_name_list :list[str] = Query([key for key in DATASET_CONFIG]),enable_ctgan_list: List[bool] = Query([False for key in DATASET_CONFIG])):
+    if len(dataset_name_list) != len(enable_ctgan_list):
+        return { "error" : "Length is not equal"}
+    for i in range(len(dataset_name_list)):
+        launch_fl_session(num_rounds=num_rounds, num_clients=num_clients, is_resume=is_resume, budget=budget, dataset_name=dataset_name_list[i], enable_ctgan=enable_ctgan_list[i])
+    return 
  
 @app.get('/')
 def testFAST():

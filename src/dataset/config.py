@@ -29,7 +29,7 @@ DATASET_CONFIG = {
         },
         "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
-            'weird_name', 'weird_addl', 'weird_notice','label'],
+            'weird_name', 'weird_addl', 'weird_notice'],
         "OUTPUT_FEATURE" : 'type'
     },
     "ToN_IoT_80-20" : {
@@ -44,7 +44,7 @@ DATASET_CONFIG = {
         },
         "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
-            'weird_name', 'weird_addl', 'weird_notice','label'],
+            'weird_name', 'weird_addl', 'weird_notice'],
         "OUTPUT_FEATURE" : 'type'
     },
     "ToN_IoT_95-5" : {
@@ -59,7 +59,7 @@ DATASET_CONFIG = {
         },
         "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
-            'weird_name', 'weird_addl', 'weird_notice','label'],
+            'weird_name', 'weird_addl', 'weird_notice'],
         "OUTPUT_FEATURE" : 'type'
     },
     "ToN_IoT_unique" : {
@@ -74,14 +74,14 @@ DATASET_CONFIG = {
         },
         "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
-            'weird_name', 'weird_addl', 'weird_notice','label'],
+            'weird_name', 'weird_addl', 'weird_notice'],
         "OUTPUT_FEATURE" : 'type'
     },
     "IoTiD20_50-50" : {
         "FEATURE_LABELS" : {
           'Cat' : ['Normal', 'Mirai', 'DoS', 'Scan', 'MITM ARP Spoofing'],
         },
-        "INPUT_FEATURE" : ['Protocol', 'Flow_Duration', 'Tot_Fwd_Pkts', 'Tot_Bwd_Pkts',
+        "INPUT_FEATURE" : ['Src_Port', 'Dst_Port', 'Protocol', 'Flow_Duration', 'Tot_Fwd_Pkts', 'Tot_Bwd_Pkts',
        'TotLen_Fwd_Pkts', 'TotLen_Bwd_Pkts', 'Fwd_Pkt_Len_Max',
        'Fwd_Pkt_Len_Min', 'Fwd_Pkt_Len_Mean', 'Fwd_Pkt_Len_Std',
        'Bwd_Pkt_Len_Max', 'Bwd_Pkt_Len_Min', 'Bwd_Pkt_Len_Mean',
