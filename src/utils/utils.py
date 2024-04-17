@@ -125,14 +125,15 @@ def plot_confussion_matrix(model, x_test, y_test, batch_size, path):
     )
     
     conf_matrix = np.array(confusion)
+    row_sums = conf_matrix.sum(axis=1, keepdims=True)
+    norm_conf_matrix = conf_matrix / row_sums
     # print(conf_matrix)
 
     fig, ax = plt.subplots(figsize=(12, 12))
-    ax.matshow(conf_matrix, cmap=plt.cm.Blues, alpha = 1)
+    ax.matshow(norm_conf_matrix, cmap=plt.cm.Blues, alpha = 1)
     for i in range(conf_matrix.shape[0]):
-        total = sum(conf_matrix[i])
         for j in range(conf_matrix.shape[1]):
-            ax.text(x=j, y=i,s=f'{conf_matrix[i, j]}\n{conf_matrix[i, j]/total*100:.2f}%', va='center', ha='center', size='x-large')
+            ax.text(x=j, y=i,s=f'{conf_matrix[i, j]}\n{norm_conf_matrix[i, j]:.2f}%', va='center', ha='center', size='x-large')
 
     
     plt.xlabel('Predictions', fontsize=20)
