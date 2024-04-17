@@ -69,20 +69,20 @@ def get_xy_dataset(df : pd.DataFrame):
     return x.astype('float32'), y.astype('int32')
 
 def load_dataset_train():
-    df = pd.read_csv(DATASET_PATH + "training-set.csv")
+    df = pd.read_csv(DATASET_PATH + "training-set.zip")
     return df
 
 def load_dataset_validate():
-    df = pd.read_csv(DATASET_PATH + "validating-set.csv")
+    df = pd.read_csv(DATASET_PATH + "validating-set.zip")
     return df
 
 def load_dataset_test():
-    df = pd.read_csv(DATASET_PATH + "testing-set.csv")
+    df = pd.read_csv(DATASET_PATH + "testing-set.zip")
     return df
 
 def load_dataset_full(idx : int):
     print("loading dataset: ", idx)
-    df = pd.read_csv(DATASET_PATH + "training-set_" + str(idx) + ".csv")
+    df = pd.read_csv(DATASET_PATH + "training-set_" + str(idx) + ".zip")
     return df
 
 

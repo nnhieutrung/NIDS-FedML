@@ -27,7 +27,7 @@ DATASET_CONFIG = {
         "weird_notice": ['-','F'],
         "type" :  ['normal', 'backdoor', 'ddos', 'dos', 'injection', 'password', 'ransomware', 'scanning', 'xss', 'mitm'],
         },
-        "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
+        "INPUT_FEATURE" : ['proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'
@@ -42,7 +42,7 @@ DATASET_CONFIG = {
         "weird_notice": ['-','F'],
         "type" :  ['normal', 'backdoor', 'ddos', 'dos', 'injection', 'password', 'ransomware', 'scanning', 'xss', 'mitm'],
         },
-        "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
+        "INPUT_FEATURE" : ['proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'
@@ -57,7 +57,7 @@ DATASET_CONFIG = {
         "weird_notice": ['-','F'],
         "type" :  ['normal', 'backdoor', 'ddos', 'dos', 'injection', 'password', 'ransomware', 'scanning', 'xss', 'mitm'],
         },
-        "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
+        "INPUT_FEATURE" : ['proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'
@@ -72,49 +72,33 @@ DATASET_CONFIG = {
         "weird_notice": ['-','F'],
         "type" :  ['normal', 'backdoor', 'ddos', 'dos', 'injection', 'password', 'ransomware', 'scanning', 'xss', 'mitm'],
         },
-        "INPUT_FEATURE" : ['src_port', 'dst_port', 'proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
+        "INPUT_FEATURE" : ['proto', 'service', 'duration', 'src_bytes', 'dst_bytes',
            'conn_state', 'missed_bytes', 'src_pkts', 'src_ip_bytes', 'dst_pkts', 'dst_ip_bytes',
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'
     },
-    "BoT_IoT_50-50" : {
+    "IoTiD20_50-50" : {
         "FEATURE_LABELS" : {
-        "proto" : ['udp', 'icmp', 'tcp', 'arp','ipv6-icmp'],
-        "category" : ['DoS', 'DDoS', 'Reconnaissance', 'Normal', 'Theft'],
+          'Cat' : ['Normal', 'Mirai', 'DoS', 'Scan', 'MITM ARP Spoofing'],
         },
-        "INPUT_FEATURE" : ['proto', 'seq','stddev',
-                           'N_IN_Conn_P_SrcIP','min','mean',
-                           'N_IN_Conn_P_DstIP','drate','srate','max','attack'],
-        "OUTPUT_FEATURE" : 'category'
+        "INPUT_FEATURE" : ['Protocol', 'Flow_Duration', 'Tot_Fwd_Pkts', 'Tot_Bwd_Pkts',
+       'TotLen_Fwd_Pkts', 'TotLen_Bwd_Pkts', 'Fwd_Pkt_Len_Max',
+       'Fwd_Pkt_Len_Min', 'Fwd_Pkt_Len_Mean', 'Fwd_Pkt_Len_Std',
+       'Bwd_Pkt_Len_Max', 'Bwd_Pkt_Len_Min', 'Bwd_Pkt_Len_Mean',
+       'Bwd_Pkt_Len_Std', 'Flow_Byts/s', 'Flow_Pkts/s', 'Flow_IAT_Mean',
+       'Flow_IAT_Std', 'Flow_IAT_Max', 'Flow_IAT_Min', 'Fwd_IAT_Tot',
+       'Fwd_IAT_Mean', 'Fwd_IAT_Std', 'Fwd_IAT_Min', 'Bwd_IAT_Tot',
+       'Bwd_IAT_Mean', 'Bwd_IAT_Std', 'Bwd_IAT_Min', 'Fwd_PSH_Flags',
+       'Bwd_PSH_Flags', 'Fwd_URG_Flags', 'Bwd_URG_Flags', 'Fwd_Header_Len',
+       'Bwd_Header_Len', 'Fwd_Pkts/s', 'Bwd_Pkts/s', 'Pkt_Len_Min',
+       'Pkt_Len_Max', 'Pkt_Len_Mean', 'Pkt_Len_Std', 'Pkt_Len_Var',
+       'FIN_Flag_Cnt', 'SYN_Flag_Cnt', 'RST_Flag_Cnt', 'ACK_Flag_Cnt',
+       'URG_Flag_Cnt', 'CWE_Flag_Count', 'ECE_Flag_Cnt', 'Down/Up_Ratio',
+        'Fwd_Byts/b_Avg', 'Fwd_Pkts/b_Avg', 'Fwd_Blk_Rate_Avg', 'Bwd_Byts/b_Avg',
+       'Bwd_Pkts/b_Avg', 'Bwd_Blk_Rate_Avg', 'Init_Fwd_Win_Byts', 'Init_Bwd_Win_Byts',
+       'Fwd_Act_Data_Pkts', 'Fwd_Seg_Size_Min', 'Active_Mean', 'Active_Std',
+       'Active_Min', 'Idle_Mean', 'Idle_Std', 'Idle_Min'],
+        "OUTPUT_FEATURE" : 'Cat'
     },
-    "BoT_IoT_80-20" : {
-        "FEATURE_LABELS" : {
-        "proto" : ['udp', 'icmp', 'tcp', 'arp','ipv6-icmp'],
-        "category" : ['DoS', 'DDoS', 'Reconnaissance', 'Normal', 'Theft'],
-        },
-        "INPUT_FEATURE" : ['proto', 'seq','stddev',
-                           'N_IN_Conn_P_SrcIP','min','mean',
-                           'N_IN_Conn_P_DstIP','drate','srate','max','attack'],
-        "OUTPUT_FEATURE" : 'category'
-    },
-    "BoT_IoT_95-5" : {
-        "FEATURE_LABELS" : {
-        "proto" : ['udp', 'icmp', 'tcp', 'arp','ipv6-icmp'],
-        "category" : ['DoS', 'DDoS', 'Reconnaissance', 'Normal', 'Theft'],
-        },
-        "INPUT_FEATURE" : ['proto', 'seq','stddev',
-                           'N_IN_Conn_P_SrcIP','min','mean',
-                           'N_IN_Conn_P_DstIP','drate','srate','max','attack'],
-        "OUTPUT_FEATURE" : 'category'
-    },
-    "BoT_IoT_unique" : {
-        "FEATURE_LABELS" : {
-        "proto" : ['udp', 'icmp', 'tcp', 'arp','ipv6-icmp'],
-        "category" : ['DoS', 'DDoS', 'Reconnaissance', 'Normal', 'Theft'],
-        },
-        "INPUT_FEATURE" : ['proto', 'seq','stddev',
-                           'N_IN_Conn_P_SrcIP','min','mean',
-                           'N_IN_Conn_P_DstIP','drate','srate','max','attack'],
-        "OUTPUT_FEATURE" : 'category'
-    },
+    
 }
