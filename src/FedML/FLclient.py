@@ -150,6 +150,15 @@ class CifarClient(fl.client.NumPyClient):
                         x_train = pd.concat([x_train, x_train_fake])
                         y_train = pd.concat([y_train, y_train_fake])
             
+            values = y_train.value_counts()
+            labels = dataset.get_output_feature_labels()
+
+            value_counts = {}
+            for index, label in enumerate(labels):
+                if index in values:
+                    value_counts[label] = values[index]
+            
+            print("After CTGAN | Attack Types:", value_counts)
 
         print("Training with " + str(len(x_train)) + " rows")
         
