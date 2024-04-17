@@ -66,6 +66,7 @@ def get_dataset(df : pd.DataFrame):
 def get_xy_dataset(df : pd.DataFrame):
     x = df[INPUT_FEATURE]
     y = df[OUTPUT_FEATURE]
+    x.replace([np.inf, -np.inf], np.nan, inplace=True)
     return x.astype('float32'), y.astype('int32')
 
 def load_dataset_train():
