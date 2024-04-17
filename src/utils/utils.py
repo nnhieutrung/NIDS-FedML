@@ -161,6 +161,7 @@ def plot_model_result(model, x, y, batch_size, path):
     index = np.arange(len(categories))
     
     plt.grid(axis='y', color = '#5A616E', linestyle = '--', linewidth = 0.5)
+    plt.ylim(0, 1.2)
 
     plt.bar(index, data[0], bar_width, label='F1 Score', color='#3B74E5')
     plt.bar(index + bar_width, data[1], bar_width, label='Precision', color='#4CBD3B')
