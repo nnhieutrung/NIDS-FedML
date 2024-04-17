@@ -77,14 +77,44 @@ DATASET_CONFIG = {
             'weird_name', 'weird_addl', 'weird_notice','label'],
         "OUTPUT_FEATURE" : 'type'
     },
-    "BoT_IoT" : {
+    "BoT_IoT_50-50" : {
         "FEATURE_LABELS" : {
         "proto" : ['udp', 'icmp', 'tcp', 'arp','ipv6-icmp'],
         "category" : ['DoS', 'DDoS', 'Reconnaissance', 'Normal', 'Theft'],
         },
         "INPUT_FEATURE" : ['proto', 'seq','stddev',
                            'N_IN_Conn_P_SrcIP','min','mean',
-                           'N_IN_Conn_P_DstIP','drate','srate','max','attack','category'],
+                           'N_IN_Conn_P_DstIP','drate','srate','max','attack'],
+        "OUTPUT_FEATURE" : 'category'
+    },
+    "BoT_IoT_80-20" : {
+        "FEATURE_LABELS" : {
+        "proto" : ['udp', 'icmp', 'tcp', 'arp','ipv6-icmp'],
+        "category" : ['DoS', 'DDoS', 'Reconnaissance', 'Normal', 'Theft'],
+        },
+        "INPUT_FEATURE" : ['proto', 'seq','stddev',
+                           'N_IN_Conn_P_SrcIP','min','mean',
+                           'N_IN_Conn_P_DstIP','drate','srate','max','attack'],
+        "OUTPUT_FEATURE" : 'category'
+    },
+    "BoT_IoT_95-5" : {
+        "FEATURE_LABELS" : {
+        "proto" : ['udp', 'icmp', 'tcp', 'arp','ipv6-icmp'],
+        "category" : ['DoS', 'DDoS', 'Reconnaissance', 'Normal', 'Theft'],
+        },
+        "INPUT_FEATURE" : ['proto', 'seq','stddev',
+                           'N_IN_Conn_P_SrcIP','min','mean',
+                           'N_IN_Conn_P_DstIP','drate','srate','max','attack'],
+        "OUTPUT_FEATURE" : 'category'
+    },
+    "BoT_IoT_unique" : {
+        "FEATURE_LABELS" : {
+        "proto" : ['udp', 'icmp', 'tcp', 'arp','ipv6-icmp'],
+        "category" : ['DoS', 'DDoS', 'Reconnaissance', 'Normal', 'Theft'],
+        },
+        "INPUT_FEATURE" : ['proto', 'seq','stddev',
+                           'N_IN_Conn_P_SrcIP','min','mean',
+                           'N_IN_Conn_P_DstIP','drate','srate','max','attack'],
         "OUTPUT_FEATURE" : 'category'
     },
 }
