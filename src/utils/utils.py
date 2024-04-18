@@ -194,7 +194,7 @@ def monitor_resources(interval_sec, cpu_usage, ram_usage, stop_event):
         ram_amount = round(psutil.virtual_memory().used / (1024 ** 2))
         cpu_usage.append(cpu_percent)
         ram_usage.append(ram_amount)
-
+        
 def record_performance(interval_sec=1):
     cpu_usage = []
     ram_usage = []
@@ -205,42 +205,43 @@ def record_performance(interval_sec=1):
     def get_result():
         stop_event.set()
         worker.join()
-        return cpu_usage, ram_usage
+        return cpu_usage, ram_usage, interval_sec
 
     return get_result
 
 def plot_performance_report(record, path):
-    cpu_usage, ram_usage = record()
+    cpu_usage, ram_usage, record_interval = record()
 
-    plt.figure()
+    length = len(cpu_usage)
 
-    plt.subplot(211)
-    plt.subplots_adjust(left=0.1)
-    plt.plot(cpu_usage)
-    plt.ylim(0,100)
-    plt.yticks([0,20,40,60,80,100])
-    plt.yticks([0,10,20,30,40,50,60,70,80,90,100], minor=True)
-    plt.grid(which='both')
-    plt.grid(axis='y', color = '#5A616E', linewidth = 0.5, alpha=0.8, which='major')
-    plt.grid(axis='y', color = '#5A616E', linestyle = '--', linewidth = 0.5, alpha=0.5, which='minor')
-    plt.grid(axis='x', alpha=0.0)
+    min = len(cpu_usage) * record_interval // 60
+    # Rescale data to fit within 1000-2000 points
+    interval = max(1, length // 1000)  # Adjusted interval for CPU usage
+    cpu_usage = cpu_usage[::interval]
+    ram_usage = ram_usage[::interval]
+
+    time_intervals = np.arange(0,length,interval)*record_interval/60
+
+    plt.figure(figsize=(10, 6))
+
+    plt.subplot(2, 1, 1)
+    plt.plot(time_intervals, cpu_usage)
+    plt.xticks(np.arange(0, min, 1.0))
+    plt.ylim(0, 100)
     plt.title('CPU Usage Over Time')
-    plt.legend()
-    
-    plt.subplot(212)
-    plt.plot(ram_usage, color='orange')
-    plt.grid(axis='y', color = '#5A616E', linestyle = '--', linewidth = 0.5)
+    plt.grid(True)
+    plt.ylabel('Usage (%)')
+    plt.xticks(rotation=45)
+
+    plt.subplot(2, 1, 2)
+    plt.plot(time_intervals, ram_usage, color='orange')
+    plt.xticks(np.arange(0, min, 1.0))
     plt.title('RAM Usage Over Time')
-    plt.legend()
+    plt.grid(True)
+    plt.ylabel('Usage (MB)')
+    plt.xticks(rotation=45)
 
-
-    plt.subplot(111, frameon=False)
-    plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
-    plt.grid(False)
-
-    plt.xlabel("Time")
-    plt.ylabel("Usage")
-    
-    plt.subplots_adjust(wspace=0.5, hspace=0.5)
+    plt.xlabel('Time')
     plt.tight_layout()
-    plt.savefig(path, dpi = 300, bbox_inches = 'tight')
+    plt.savefig(path, dpi=300)
+    plt.show()
