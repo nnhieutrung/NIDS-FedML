@@ -51,7 +51,7 @@ def handle_launch_FL_session(model,x_train, y_train, x_test, y_test, x_val, y_va
         client = CifarClient(model, x_train, y_train, x_test, y_test, x_val, y_val, client_id, client_address), 
         grpc_max_message_length = 1024*1024*1024)
 
-    utils.plot_performance_report(record, f'./results/Session-{session}/server-performance.png')
+    utils.plot_performance_report(record, f'./results/Session-{session}/performance-client_{CLIENT_ID + 1}.png')
 
 
 

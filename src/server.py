@@ -166,7 +166,7 @@ def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_re
         file.write(f'\nend_time: {end_time.strftime("%H:%M:%S %d/%m/%Y")}')
         file.write(f'\nlength_time: {"{:02d}:{:02d}:{:02d}".format(time_taken.seconds // 3600, (time_taken.seconds % 3600) // 60, time_taken.seconds % 60)}')
 
-    utils.plot_performance_report(record, f'./results/Session-{session}/server-performance.png')
+    utils.plot_performance_report(record, f'./results/Session-{session}/performance-server.png')
 
 
 @app.post("/launchListFL")
