@@ -33,7 +33,7 @@ contract Federation{
     mapping (uint => Strategy) strategies;
     mapping (uint => mapping(uint => mapping(uint => CTGAN))) ctgans;
 
-    event addStrategyEvent(string _algoName, uint _num_round, uint _num_client, string _dataset);
+    event addStrategyEvent(uint _session, string _algoName, uint _num_round, uint _num_client, string _dataset);
     event addCTGANFitEvent(uint datatype, uint maxRows, uint minRows);
     event addCTGANDatafakeEvent(uint datatype, string datafake, bool complete);
 
@@ -72,7 +72,7 @@ contract Federation{
         strategies[_session].numClients = _numClients;
         strategies[_session].dataset = _dataset;
         
-        emit addStrategyEvent(_algoName, _numRounds, _numClients, _dataset);
+        emit addStrategyEvent(_session, _algoName, _numRounds, _numClients, _dataset);
         return "Strategy added";
     }
 

@@ -33,25 +33,30 @@ CLIENT_ID = None
 print(tf.config.list_physical_devices('GPU'))
 
 class FLlaunch:
-    def start(self, dataset_name):
+    def start(self, dataset_name, session):
         dataset.change_dataset(dataset_name)
         print(dataset.get_dataset_path())
-        listen_and_participate(CLIENT_ID)
+        listen_and_participate(CLIENT_ID, session)
 
 
-def handle_launch_FL_session(model,x_train, y_train, x_test, y_test, x_val, y_val, client_id, client_address):
+def handle_launch_FL_session(model,x_train, y_train, x_test, y_test, x_val, y_val, client_id, client_address, session):
     """
     handles smart contract's addStrategy event by starting flwr client
     """
+
+    record = utils.record_performance()
+    
     fl.client.start_numpy_client(
         server_address="127.0.0.1:18922", 
         client = CifarClient(model, x_train, y_train, x_test, y_test, x_val, y_val, client_id, client_address), 
         grpc_max_message_length = 1024*1024*1024)
 
+    utils.plot_performance_report(record, f'./results/Session-{session}/server-performance.png')
+
 
 
 @app.post("/participateFL")
-def listen_and_participate(client_id:int):
+def listen_and_participate(client_id:int, session:int):
     client_address = blockchainService.getAddress(client_id)
     # If client_id is odd number, the program will use GPU to train the model,
     # else CPU will train the model
@@ -70,7 +75,7 @@ def listen_and_participate(client_id:int):
     _, x_test, _, y_test  = train_test_split(x_test, y_test, test_size=0.2, stratify=y_test)
 
     model = utils.get_model(inshape=x_train.shape[1])
-    handle_launch_FL_session(model, x_train, y_train, x_test, y_test, x_val, y_val, client_id, client_address)
+    handle_launch_FL_session(model, x_train, y_train, x_test, y_test, x_val, y_val, client_id, client_address, session)
 
 
 

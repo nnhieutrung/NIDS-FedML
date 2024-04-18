@@ -8,6 +8,10 @@ from keras.utils import to_categorical
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import pandas as pd
+import psutil
+import time
+import matplotlib.pyplot as plt
+from threading import Thread, Event
 
 from config import *
 from utils import dataset
@@ -174,5 +178,64 @@ def plot_model_result(model, x, y, batch_size, path):
     plt.title('Performance Metrics for Each Class', fontsize=20)
     plt.legend()
 
+    plt.tight_layout()
+    plt.savefig(path, dpi = 300, bbox_inches = 'tight')
+
+
+def monitor_resources(interval_sec, cpu_usage, ram_usage, stop_event):
+    while not stop_event.is_set():
+        cpu_percent = psutil.cpu_percent(interval=None)
+        ram_amount = round(psutil.virtual_memory().used / (1024 ** 2))
+        cpu_usage.append(cpu_percent)
+        ram_usage.append(ram_amount)
+        time.sleep(interval_sec)
+
+def record_performance(interval_sec=1):
+    cpu_usage = []
+    ram_usage = []
+    stop_event = Event()
+    worker = Thread(target=monitor_resources, args=(interval_sec, cpu_usage, ram_usage, stop_event), daemon=True)
+    worker.start()
+
+    def get_result():
+        stop_event.set()
+        worker.join()
+        return cpu_usage, ram_usage
+
+    return get_result
+
+def plot_performance_report(record, path):
+    cpu_usage, ram_usage = record()
+
+    plt.figure()
+
+    plt.subplot(211)
+    plt.subplots_adjust(left=0.1)
+    plt.plot(cpu_usage)
+    plt.ylim(0,100)
+    plt.yticks([0,20,40,60,80,100])
+    plt.yticks([0,10,20,30,40,50,60,70,80,90,100], minor=True)
+    plt.grid(which='both')
+    plt.grid(axis='y', color = '#5A616E', linewidth = 0.5, alpha=0.8, which='major')
+    plt.grid(axis='y', color = '#5A616E', linestyle = '--', linewidth = 0.5, alpha=0.5, which='minor')
+    plt.grid(axis='x', alpha=0.0)
+    plt.title('CPU Usage Over Time')
+    plt.legend()
+    
+    plt.subplot(212)
+    plt.plot(ram_usage, color='orange')
+    plt.grid(axis='y', color = '#5A616E', linestyle = '--', linewidth = 0.5)
+    plt.title('RAM Usage Over Time')
+    plt.legend()
+
+
+    plt.subplot(111, frameon=False)
+    plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+    plt.grid(False)
+
+    plt.xlabel("Time")
+    plt.ylabel("Usage")
+    
+    plt.subplots_adjust(wspace=0.5, hspace=0.5)
     plt.tight_layout()
     plt.savefig(path, dpi = 300, bbox_inches = 'tight')
