@@ -190,11 +190,10 @@ def plot_model_result(model, x, y, batch_size, path):
 
 def monitor_resources(interval_sec, cpu_usage, ram_usage, stop_event):
     while not stop_event.is_set():
-        cpu_percent = psutil.cpu_percent(interval=None)
+        cpu_percent = psutil.cpu_percent(interval=interval_sec)
         ram_amount = round(psutil.virtual_memory().used / (1024 ** 2))
         cpu_usage.append(cpu_percent)
         ram_usage.append(ram_amount)
-        time.sleep(interval_sec)
 
 def record_performance(interval_sec=1):
     cpu_usage = []
