@@ -130,7 +130,7 @@ def plot_confussion_matrix(model, x_test, y_test, batch_size, path):
     
     conf_matrix = np.array(confusion)
     row_sums = conf_matrix.sum(axis=1, keepdims=True)
-    norm_conf_matrix = conf_matrix / row_sums
+    norm_conf_matrix = conf_matrix / row_sums * 100
     # print(conf_matrix)
 
     fig, ax = plt.subplots(figsize=(12, 12))
@@ -165,9 +165,6 @@ def plot_model_result(model, x, y, batch_size, path):
     bar_width = 0.25
     index = np.arange(len(categories))
     
-    plt.grid(axis='y', color = '#5A616E', linestyle = '--', linewidth = 0.5)
-    plt.ylim(0, 1.2)
-
     plt.bar(index, data[0], bar_width, label='F1 Score', color='#3B74E5')
     plt.bar(index + bar_width, data[1], bar_width, label='Precision', color='#4CBD3B')
     plt.bar(index + 2*bar_width, data[2], bar_width, label='Recall', color='#F47710')
@@ -175,6 +172,15 @@ def plot_model_result(model, x, y, batch_size, path):
     plt.ylabel('Score', fontsize=14)
     plt.xlabel('Class', fontsize=14)
     plt.xticks(index + bar_width, categories, rotation=45, fontsize=12)
+    plt.ylim(0, 1.01)
+    plt.yticks([0,0.2,0.4,0.6,0.8,1.0])
+    plt.yticks([0,0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1.0], minor=True)
+    plt.grid(which='both')
+    plt.grid(axis='y', color = '#5A616E', linewidth = 0.5, alpha=0.8, which='major')
+    plt.grid(axis='y', color = '#5A616E', linestyle = '--', linewidth = 0.5, alpha=0.5, which='minor')
+    plt.grid(axis='x', alpha=0.0)
+
+
     plt.title('Performance Metrics for Each Class', fontsize=20)
     plt.legend()
 
