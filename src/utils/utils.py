@@ -232,7 +232,6 @@ def plot_performance_report(record, path):
     plt.title('CPU Usage Over Time')
     plt.grid(True)
     plt.ylabel('Usage (%)')
-    plt.xticks(rotation=45)
 
     plt.subplot(2, 1, 2)
     plt.plot(time_intervals, ram_usage, color='orange')
@@ -241,8 +240,6 @@ def plot_performance_report(record, path):
     plt.title('RAM Usage Over Time')
     plt.grid(True)
     plt.ylabel('Usage (MB)')
-    plt.xticks(rotation=45)
-
     plt.xlabel('Time')
     plt.tight_layout()
     plt.savefig(path, dpi=300)
