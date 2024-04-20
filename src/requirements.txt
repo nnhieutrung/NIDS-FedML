@@ -11,3 +11,4 @@ tensorflow==2.13.1
 tensorflow_addons==0.22.0
 tensorflow_intel==2.13.1
 web3==6.15.1
+psutil=5.9.8

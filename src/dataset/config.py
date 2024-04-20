@@ -136,15 +136,5 @@ DATASET_CONFIG = {
        'Active_Min', 'Idle_Mean', 'Idle_Std', 'Idle_Min'],
         "OUTPUT_FEATURE" : 'Cat'
     },
-    "BoT_IoT_50-50" : {
-        "FEATURE_LABELS" : {
-        'proto' : ['udp', 'tcp', 'icmp', 'arp', 'ipv6-icmp'],
-        "category" :  ['DDoS', 'DoS', 'Reconnaissance', 'Normal', 'Theft'],
-        },
-        "INPUT_FEATURE" : [ 'proto',  'seq',
-                            'stddev', 'N_IN_Conn_P_SrcIP', 'min', 'state_number',
-                             'mean', 'N_IN_Conn_P_DstIP', 'drate', 'srate', 'max', 'attack'],
-        "OUTPUT_FEATURE" : 'category'
-    },
     
 }
