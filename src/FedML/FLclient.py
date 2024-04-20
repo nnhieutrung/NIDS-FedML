@@ -91,6 +91,21 @@ class CifarClient(fl.client.NumPyClient):
             train_data = pd.concat([self.x_train, self.y_train], axis=1, join="inner")
             global ctgan
             
+            if ctgan is None:
+                print("Training CTGAN")
+                ctgan_data = train_data[1:1]
+                for val in train_data[dataset.get_output_feature()].unique():
+                    val_data = train_data[train_data[dataset.get_output_feature()] == val].drop_duplicates()
+                    if len(val_data) > CTGAN_LENGTH:
+                        val_data = val_data.sample(n=CTGAN_LENGTH, random_state=42)
+                    ctgan_data = pd.concat([ctgan_data, val_data])
+
+                ctgan = CTGAN(verbose=True, epochs=CTGAN_NUM_EPOCHS)
+                if torch.cuda.is_available():
+                    ctgan.set_device('cuda')
+                ctgan.fit(ctgan_data, ctgan_data.columns)
+
+                
             for datatype, feature in enumerate(dataset.get_output_feature_labels()):
                 maxRows = 0
                 if datatype in values:
@@ -103,20 +118,6 @@ class CifarClient(fl.client.NumPyClient):
                 if CTGAN_maxRows - CTGAN_minRows > 0:
                     if maxRows == CTGAN_maxRows:
                         print("CTGAN ready for make datafake")
-
-                        if ctgan is None:
-                            ctgan_data = train_data[1:1]
-                            for val in train_data[dataset.get_output_feature()].unique():
-                                val_data = train_data[train_data[dataset.get_output_feature()] == val].drop_duplicates()
-                                if len(val_data) > CTGAN_LENGTH:
-                                    val_data = val_data.sample(n=CTGAN_LENGTH, random_state=42)
-                                ctgan_data = pd.concat([ctgan_data, val_data])
-
-                            ctgan = CTGAN(verbose=True, epochs=CTGAN_NUM_EPOCHS)
-                            if torch.cuda.is_available():
-                                ctgan.set_device('cuda')
-                            ctgan.fit(ctgan_data, ctgan_data.columns)
-
                         datalength = CTGAN_maxRows-CTGAN_minRows
                         datafake = train_data[1:1] 
 
