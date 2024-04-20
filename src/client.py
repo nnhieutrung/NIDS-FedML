@@ -93,7 +93,6 @@ def testFAST(client_id:int):
     global CLIENT_ID
     CLIENT_ID = client_id
     client_address = blockchainService.getAddress(client_id)
-    print(client_id)
     return("Hello from client add: ", client_address)
 
 
