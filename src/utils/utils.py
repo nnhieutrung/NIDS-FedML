@@ -221,12 +221,23 @@ def plot_performance_report(record, path):
     ram_usage = ram_usage[::interval]
 
     time_intervals = np.arange(0,length,interval)*record_interval/60
+    tick_interval = 5.0
+
+    if min > 10*60:
+        tick_interval = 30.0
+    elif min > 7*60:
+        tick_interval = 20.0
+    elif min > 5*60:
+        tick_interval = 15.0
+    elif min > 3*60:
+        tick_interval = 10.0
+
 
     plt.figure(figsize=(10, 6))
 
     plt.subplot(2, 1, 1)
     plt.plot(time_intervals, cpu_usage)
-    plt.xticks(np.arange(0, min, 5.0))
+    plt.xticks(np.arange(0, min, tick_interval))
     plt.xlim(0, min)
     plt.ylim(0, 100)
     plt.title('CPU Usage Over Time')
@@ -235,7 +246,7 @@ def plot_performance_report(record, path):
 
     plt.subplot(2, 1, 2)
     plt.plot(time_intervals, ram_usage, color='orange')
-    plt.xticks(np.arange(0, min, 5.0))
+    plt.xticks(np.arange(0, min, tick_interval))
     plt.xlim(0, min)
     plt.title('RAM Usage Over Time')
     plt.grid(True)

@@ -60,9 +60,6 @@ def listen_and_participate(client_id:int, session:int):
     client_address = blockchainService.getAddress(client_id)
     # If client_id is odd number, the program will use GPU to train the model,
     # else CPU will train the model
-    if client_id%2!=0:
-        os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
-
 
     x_train, y_train = dataset.get_dataset(df=dataset.load_dataset_full(client_id))
     x_val, y_val = dataset.get_dataset(df=dataset.load_dataset_validate())
