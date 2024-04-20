@@ -1,7 +1,6 @@
 ETH_SERVER = 'HTTP://localhost:8545'
 FLWR_PORT = '18922'
 FLWR_SERVER = 'localhost'
-FLWR_CLIEND_ID = None
 
 LEARNING_RATE   = 1e-3
 BATCH_SIZE      = 64 #32
