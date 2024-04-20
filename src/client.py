@@ -19,6 +19,7 @@ import numpy as np
 from utils import dataset
 from utils import utils
 from dataset.config import *
+from config import *
 
 # Parse command line argument `partition`
 # parser = argparse.ArgumentParser(description="Flower")
@@ -47,7 +48,7 @@ def handle_launch_FL_session(model,x_train, y_train, x_test, y_test, x_val, y_va
     record = utils.record_performance()
     
     fl.client.start_numpy_client(
-        server_address="192.168.100.163:18922", 
+        server_address= FLWR_SERVER + ":" + FLWR_PORT, 
         client = CifarClient(model, x_train, y_train, x_test, y_test, x_val, y_val, client_id, client_address), 
         grpc_max_message_length = 1024*1024*1024)
 

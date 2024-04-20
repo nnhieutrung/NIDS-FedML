@@ -16,6 +16,7 @@ from services.bc_server_service import BlockchainService
 from utils import utils
 from utils import dataset
 from dataset.config import *
+from config import *
 
 app=FastAPI()
 blockchainService = BlockchainService()
@@ -142,7 +143,7 @@ def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_re
 
     # Start Flower server
     fl.server.start_server(
-        server_address="192.168.100.163:18922",
+        server_address= "0.0.0.0:" + FLWR_PORT,
         config=fl.server.ServerConfig(num_rounds=num_rounds),
         strategy=strategy,
     )
