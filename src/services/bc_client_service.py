@@ -8,14 +8,14 @@ from config import *
 
 w3 = Web3(Web3.HTTPProvider(ETH_SERVER))
 
-contributionSC = open('./blockchain/build/contracts/Contribution.json')
+contributionSC = open('.//Blockchain/build/contracts/Contribution.json')
 contributionData = json.load(contributionSC)
 contributionAbi = contributionData['abi']
 addressContribution = contributionData['networks']['5777']['address']
 contribution_contract_instance = w3.eth.contract(address=addressContribution, abi=contributionAbi)
 
 
-federationSC = open('./blockchain/build/contracts/Federation.json')
+federationSC = open('.//Blockchain/build/contracts/Federation.json')
 federationData = json.load(federationSC)
 federationAbi = federationData['abi']
 addressFederation = federationData['networks']['5777']['address']
