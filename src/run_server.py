@@ -9,4 +9,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     print(f"Start server with PORT: {args.port}")
-    uvicorn.run('server:app', port=args.port, reload=True)
+    uvicorn.run('server:app', port=args.port, reload=True, log_level='critical')
