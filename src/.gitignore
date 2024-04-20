@@ -1,7 +1,7 @@
 save-weights/*
 results/*
 config_training.json
-
+local_config.json
 
 
 !/**/.gitkeep

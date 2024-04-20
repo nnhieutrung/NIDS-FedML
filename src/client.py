@@ -29,8 +29,9 @@ from config import *
 
 blockchainService = BlockchainService()
 app=FastAPI()
-CLIENT_ID = None
+CLIENT_ID = FLWR_CLIEND_ID
 
+print("Client ID: ", CLIENT_ID)
 print(tf.config.list_physical_devices('GPU'))
 
 class FLlaunch:
