@@ -47,7 +47,7 @@ def handle_launch_FL_session(model,x_train, y_train, x_test, y_test, x_val, y_va
     record = utils.record_performance()
     
     fl.client.start_numpy_client(
-        server_address="127.0.0.1:18922", 
+        server_address="192.168.100.163:18922", 
         client = CifarClient(model, x_train, y_train, x_test, y_test, x_val, y_val, client_id, client_address), 
         grpc_max_message_length = 1024*1024*1024)
 

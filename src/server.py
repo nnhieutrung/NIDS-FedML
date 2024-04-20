@@ -142,7 +142,7 @@ def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_re
 
     # Start Flower server
     fl.server.start_server(
-        server_address="127.0.0.1:18922",
+        server_address="192.168.100.163:18922",
         config=fl.server.ServerConfig(num_rounds=num_rounds),
         strategy=strategy,
     )
