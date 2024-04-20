@@ -10,25 +10,6 @@ from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from sklearn.preprocessing import MinMaxScaler
 
-
-app=FastAPI()
-
-import uvicorn
-import argparse
-
-
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Flower")
-    parser.add_argument("-p", "--port", type=int,default="8000")
-    args = parser.parse_args()
-
-    print(f"Start server with PORT: {args.port}")
-    uvicorn.run('server:app', port=args.port, reload=True)
-
-
-if __name__ == "__main__":
-    main()
-
 from FedML.FLstrategy import *
 from services.bc_server_service import BlockchainService
 
@@ -38,6 +19,7 @@ from dataset.config import *
 from config import *
 
 
+app=FastAPI()
 blockchainService = BlockchainService()
 
 

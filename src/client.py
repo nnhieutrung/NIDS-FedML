@@ -10,39 +10,8 @@ from sklearn.model_selection import train_test_split
 
 import tensorflow as tf
 import flwr as fl
-import json
-import argparse
-import matplotlib.pyplot as plt
 import os
-import numpy as np
 
-
-app=FastAPI()
-
-import uvicorn
-import argparse
-
-CLIENT_ID = None
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Flower")
-    parser.add_argument("-p", "--port", type=int,default="-1")
-    parser.add_argument("-ci", "--client_id", type=int,default="0")
-    args = parser.parse_args()
-
-    global CLIENT_ID
-    CLIENT_ID = args.client_id
-    
-    port = 8001 + CLIENT_ID
-    
-    if args.port != -1:
-        port = args.port
-
-    print(f"Start client {CLIENT_ID} with PORT: {port}")
-    uvicorn.run('client:app', port=port, reload=True)
-
-
-if __name__ == "__main__":
-    main()
 
 from utils import dataset
 from utils import utils
@@ -55,6 +24,8 @@ from config import *
 # args = parser.parse_args()
 # client_id = args.partition
 
+CLIENT_ID = None
+app=FastAPI()
 blockchainService = BlockchainService()
 
 
@@ -122,6 +93,7 @@ def testFAST(client_id:int):
     global CLIENT_ID
     CLIENT_ID = client_id
     client_address = blockchainService.getAddress(client_id)
+    print(client_id)
     return("Hello from client add: ", client_address)
 
 
