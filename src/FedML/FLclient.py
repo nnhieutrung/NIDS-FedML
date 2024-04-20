@@ -113,7 +113,8 @@ class CifarClient(fl.client.NumPyClient):
                                 ctgan_data = pd.concat([ctgan_data, val_data])
 
                             ctgan = CTGAN(verbose=True, epochs=CTGAN_NUM_EPOCHS)
-                            ctgan.set_device('cuda')
+                            if torch.cuda.is_available():
+                                ctgan.set_device('cuda')
                             ctgan.fit(ctgan_data, ctgan_data.columns)
 
                         datalength = CTGAN_maxRows-CTGAN_minRows
