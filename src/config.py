@@ -1,5 +1,6 @@
-ETH_SERVER = 'HTTP://192.168.100.163:8545'
-
+ETH_SERVER = 'HTTP://localhost:8545'
+FLWR_PORT = '18922'
+FLWR_SERVER = 'localhost'
 
 LEARNING_RATE   = 1e-3
 BATCH_SIZE      = 64 #32
