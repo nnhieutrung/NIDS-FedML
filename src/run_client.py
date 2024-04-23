@@ -34,4 +34,4 @@ if __name__ == '__main__':
 
     print(f"Start client {args.client_id} with PORT: {port}")
     
-    uvicorn.run('client:app', port=port, reload=True, log_level='critical')
+    uvicorn.run('client:app', port=port, reload=True, log_level='error')
