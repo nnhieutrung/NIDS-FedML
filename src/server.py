@@ -170,7 +170,6 @@ def launch_fl_session(num_rounds:int= Query(4), num_clients:int= Query(2), is_re
 
     utils.plot_performance_report(record, f'./results/Session-{session}/performance-server.png')
 
-
 @app.post("/launchListFL")
 def launch_fl_list(num_rounds:int= Query(4), num_clients:int= Query(2), is_resume:bool = Query(False), budget: float = Query(100),dataset_name_list :list[str] = Query([key for key in DATASET_CONFIG]),enable_ctgan_list: List[bool] = Query([False for key in DATASET_CONFIG])):
     if len(dataset_name_list) != len(enable_ctgan_list):
@@ -178,7 +177,29 @@ def launch_fl_list(num_rounds:int= Query(4), num_clients:int= Query(2), is_resum
     for i in range(len(dataset_name_list)):
         launch_fl_session(num_rounds=num_rounds, num_clients=num_clients, is_resume=is_resume, budget=budget, dataset_name=dataset_name_list[i], enable_ctgan=enable_ctgan_list[i])
     return 
- 
+
+
+@app.post("/launchCentralize")
+def launch_centralize(dataset_name: str = Query(enum=[key for key in DATASET_CONFIG])):
+    if dataset_name not in DATASET_CONFIG:
+        return {"error": "Invalid dataset name"}
+    
+    dataset.change_dataset(dataset_name)
+    print(dataset.get_dataset_path()) 
+
+
+    x_train, y_train = dataset.get_dataset(df=dataset.load_dataset_full())
+    x_val, y_val = dataset.get_dataset(df=dataset.load_dataset_validate())
+    x_test, y_test = dataset.get_dataset(df=dataset.load_dataset_test())
+
+    scaler = MinMaxScaler()
+    x_train = scaler.fit_transform(x_train)
+    x_val =  scaler.transform(x_val)
+    x_test = scaler.transform(x_test)
+
+    y_test = utils.label_to_categorical(y_test)
+    
+
 @app.get('/')
 def testFAST():
     return("Hello from server!")
