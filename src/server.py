@@ -179,27 +179,6 @@ def launch_fl_list(num_rounds:int= Query(4), num_clients:int= Query(2), is_resum
     return 
 
 
-@app.post("/launchCentralize")
-def launch_centralize(dataset_name: str = Query(enum=[key for key in DATASET_CONFIG])):
-    if dataset_name not in DATASET_CONFIG:
-        return {"error": "Invalid dataset name"}
-    
-    dataset.change_dataset(dataset_name)
-    print(dataset.get_dataset_path()) 
-
-
-    x_train, y_train = dataset.get_dataset(df=dataset.load_dataset_full())
-    x_val, y_val = dataset.get_dataset(df=dataset.load_dataset_validate())
-    x_test, y_test = dataset.get_dataset(df=dataset.load_dataset_test())
-
-    scaler = MinMaxScaler()
-    x_train = scaler.fit_transform(x_train)
-    x_val =  scaler.transform(x_val)
-    x_test = scaler.transform(x_test)
-
-    y_test = utils.label_to_categorical(y_test)
-    
-
 @app.get('/')
 def testFAST():
     return("Hello from server!")
