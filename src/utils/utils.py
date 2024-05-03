@@ -10,7 +10,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import psutil
 import time
-import matplotlib.pyplot as plt
 from threading import Thread, Event
 
 from config import *
@@ -214,30 +213,29 @@ def plot_performance_report(record, path):
 
     length = len(cpu_usage)
 
+
     min = len(cpu_usage) * record_interval // 60
     # Rescale data to fit within 1000-2000 points
     interval = max(1, length // 1000)  # Adjusted interval for CPU usage
     cpu_usage = cpu_usage[::interval]
     ram_usage = ram_usage[::interval]
 
-    time_intervals = np.arange(0,length,interval)*record_interval/60
-    tick_interval = 5.0
+    time_intervals = np.arange(0,length,interval)*record_interval/60    
 
-    if min > 10*60:
-        tick_interval = 30.0
-    elif min > 7*60:
-        tick_interval = 20.0
-    elif min > 5*60:
-        tick_interval = 15.0
-    elif min > 3*60:
-        tick_interval = 10.0
+
+    MAX_LENGTH = 600
+
+    if len(cpu_usage) > MAX_LENGTH:
+        step =  round(len(cpu_usage)/MAX_LENGTH)
+        cpu_usage = cpu_usage[::step]
+        ram_usage = ram_usage[::step]
+        time_intervals = time_intervals[::step]
 
 
     plt.figure(figsize=(10, 6))
 
     plt.subplot(2, 1, 1)
     plt.plot(time_intervals, cpu_usage)
-    plt.xticks(np.arange(0, min, tick_interval))
     plt.xlim(0, min)
     plt.ylim(0, 100)
     plt.title('CPU Usage Over Time')
@@ -246,7 +244,6 @@ def plot_performance_report(record, path):
 
     plt.subplot(2, 1, 2)
     plt.plot(time_intervals, ram_usage, color='orange')
-    plt.xticks(np.arange(0, min, tick_interval))
     plt.xlim(0, min)
     plt.title('RAM Usage Over Time')
     plt.grid(True)

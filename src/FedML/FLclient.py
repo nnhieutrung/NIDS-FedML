@@ -122,8 +122,8 @@ class CifarClient(fl.client.NumPyClient):
                         datafake = train_data[1:1] 
 
                         while datafake.shape[0] < datalength*2:
-                            datafake = pd.concat([datafake, ctgan.sample(datalength)])
-                            datafake = datafake[datafake[dataset.get_output_feature()] == datatype].drop_duplicates()
+                            datafake = pd.concat([datafake, ctgan.sample(n=datalength, condition_column=dataset.get_output_feature(), condition_value = datatype)])
+                            datafake = datafake.drop_duplicates()
 
                         datafake = datafake.sample(n=datalength, random_state=42)
 
