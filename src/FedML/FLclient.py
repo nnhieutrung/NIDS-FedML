@@ -124,6 +124,10 @@ class CifarClient(fl.client.NumPyClient):
                         while datafake.shape[0] < datalength*1.1:
                             datafake = pd.concat([datafake, ctgan.sample(datalength*10)])
                             datafake = datafake[datafake[dataset.get_output_feature()] == datatype].drop_duplicates()
+                            
+                            sys.stdout.write('\r')
+                            sys.stdout.write("Generating %d/%d" % (len(datafake), datalength))
+                            sys.stdout.flush()
 
                         datafake = datafake.sample(n=datalength, random_state=42)
 
