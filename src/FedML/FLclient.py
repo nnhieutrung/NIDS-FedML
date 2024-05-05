@@ -115,14 +115,14 @@ class CifarClient(fl.client.NumPyClient):
                 CTGAN_maxRows, CTGAN_minRows = blockchainService.getCTGANMaxRows(_session=session, _roundNum=_round, _datatype=datatype, _numRows=maxRows, client_id=self.client_id)
 
                 print(CTGAN_maxRows, CTGAN_minRows)
-                if CTGAN_maxRows - CTGAN_minRows > 0:
+                if CTGAN_minRows == 0 or CTGAN_maxRows/CTGAN_minRows > 1.25:
                     if maxRows == CTGAN_maxRows:
                         print("CTGAN ready for make datafake")
                         datalength = CTGAN_maxRows-CTGAN_minRows
                         datafake = train_data[1:1] 
 
                         while datafake.shape[0] < datalength*1.1:
-                            datafake = pd.concat([datafake, ctgan.sample(datalength*10)])
+                            datafake = pd.concat([datafake, ctgan.sample(datalength*3)])
                             datafake = datafake[datafake[dataset.get_output_feature()] == datatype].drop_duplicates()
                             
                             sys.stdout.write('\r')
