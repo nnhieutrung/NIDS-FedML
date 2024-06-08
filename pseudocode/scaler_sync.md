@@ -31,6 +31,6 @@ The mechanism for synchronizing the MinMaxScaler between the client and server.
 1. Initialize `scaler` as a **MinMaxScaler** object.
 2. Retrieve `scaler_data` from `config["scaler_data"]`.
 3. Fit `scaler` using `scaler_data`.
-4. `scaled_dataset` = tranform a `dataset` which the fitted scaler.
+4. `scaled_dataset` = tranform a `dataset` with the fitted scaler.
 5. **Return** `scaled_dataset`.
 
