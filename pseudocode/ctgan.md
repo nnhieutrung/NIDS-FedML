@@ -1,4 +1,4 @@
-# CTGAN Generate fakedata in each Client
+# CTGAN Generate fakedata and sync in Client
 
 ## Process:
 - FOR EACH `label` IN **OUTPUT_LABELS** from the **dataset**:
