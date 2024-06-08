@@ -20,6 +20,7 @@ The mechanism for synchronizing the MinMaxScaler between the client and server.
 5. **Return** `config`.
 
 ## In Node Client
+### Function get_scaler
 **Input:**
 - `dataset`: Client dataset.
 - `config`: A configuration dictionary received from the Flower Server each round.
