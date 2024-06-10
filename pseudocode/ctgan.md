@@ -1,9 +1,6 @@
 # CTGAN Generate fakedata and sync in Client
 
 ## Process:
-- If CTGAN Model does not exist:
-    - Fetch every 500 rows per `label`.
-    - Use these rows for training the CTGAN model.
 - FOR EACH `label` IN **OUTPUT_LABELS** from the **dataset**:
     1. For each `client`:
         - Get `numRows` = number of rows with `label`.
@@ -11,7 +8,12 @@
     2. Receive `minRows` and `maxRows` from the **blockchain**.
     3. If `maxRows/minRows` < 1.25:
         - **Continue**: Skip this `label`.
-    4. If a **client** has `numRows` = `maxRows`, this client will generate fake data:
+      
+    4. If CTGAN Model does not exist:
+        - Fetch every 500 rows per `label`.
+        - Use these rows for training the CTGAN model.
+    
+    5. If a **client** has `numRows` = `maxRows`, this client will generate fake data:
         - Calculate `datafake_length = maxRows - minRows`.
         - Initialize `list_datafake` as an empty list.
         - While `len(list_datafake) < datafake_length*2`:
@@ -22,7 +24,7 @@
         - Convert data to a string.
         - Split the string into `chunks` of length 30,000 characters:
             - Send each `chunk` to the **blockchain**.
-    5. If a client has `numRows < maxRows`, this client will receive the datafake:
+    6. If a client has `numRows < maxRows`, this client will receive the datafake:
         - Receive `chunks` from the **blockchain**.
         - Merge the `chunks` into the `datafake` string.
         - Convert the `datafake` string back to a dataset format.
